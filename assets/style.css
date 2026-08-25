@@ -1,0 +1,861 @@
+/* ==========================================================================
+   Mensa Yapı Malzemeleri A.Ş.
+   assets/style.css
+
+   Bölümler:
+     1. Tasarım jetonları (renk / tipografi / boşluk)
+     2. Sıfırlama ve taban
+     3. Yardımcı sınıflar ve düzen
+     4. Bileşenler (başlık, hero, kart, ızgara, footer)
+     5. Hareket
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ *
+   1. TASARIM JETONLARI
+ * ------------------------------------------------------------------ */
+:root {
+  /* --- marka --- */
+  --brand:          #9A3B26;   /* terracotta — açık zeminde 6.94:1 */
+  --brand-dark:     #7A2B18;   /* hover                    9.61:1 */
+  --brand-on-dark:  #D26047;   /* koyu zeminde marka tonu  4.93:1 */
+
+  /* --- açık zemin --- */
+  --bg:        #F7F4F1;
+  --bg-alt:    #EFEAE6;
+  --surface:   #FFFFFF;
+  --line:      #E2DBD6;
+  --line-soft: #E7E1DC;
+
+  /* --- açık zeminde metin --- */
+  --ink:       #1A1614;   /* başlık            16.5:1 */
+  --ink-body:  #4A4340;   /* gövde              9.69:1 */
+  --ink-muted: #6E645F;   /* ikincil            5.75:1 */
+  --ink-faint: #78726D;   /* numara / üst bilgi 4.74:1 */
+
+  /* --- koyu zemin --- */
+  --dark:        #14110F;
+  --dark-alt:    #1A1614;
+  --dark-line:   #2A2422;
+  --dark-line-2: #3A3330;
+
+  /* --- koyu zeminde metin --- */
+  --on-dark:       #D8CEC8;  /* 12.16:1 */
+  --on-dark-muted: #A79B94;  /*  6.95:1 */
+  --on-dark-faint: #88807B;  /*  4.85:1 */
+
+  --whatsapp: #25D366;
+
+  /* --- tipografi --- */
+  --font-display: Archivo, system-ui, sans-serif;
+  --font-body:    Barlow, system-ui, sans-serif;
+
+  /* akışkan ölçek: küçük ekran → geniş ekran, ara değerler otomatik.
+     Bu sayede her kırılım için ayrı font-size geçersiz kılması gerekmiyor. */
+  --t-hero:  clamp(2.25rem, 1.35rem + 4.3vw, 4.625rem);  /*  36 →  74px */
+  --t-h2:    clamp(1.75rem, 1.32rem + 2.1vw, 2.875rem);  /*  28 →  46px */
+  --t-h3:    clamp(1.25rem, 1.13rem + 0.6vw, 1.4375rem); /*  20 →  23px */
+  --t-lead:  clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);    /*  17 →  20px */
+  --t-body:  clamp(1rem, 0.97rem + 0.16vw, 1.125rem);    /*  16 →  18px */
+  --t-sm:    0.9375rem;                                  /*      15px  */
+  --t-xs:    0.8125rem;                                  /*      13px  */
+
+  /* --- 8px boşluk ızgarası --- */
+  --s1: 0.5rem;  --s2: 1rem;    --s3: 1.5rem;  --s4: 2rem;
+  --s5: 2.5rem;  --s6: 3rem;    --s7: 4rem;    --s8: 5rem;
+  --s9: 6rem;    --s10: 7rem;
+
+  /* bölüm dikey boşluğu — kırılımsız akışkan */
+  --sec-y: clamp(3.5rem, 1.5rem + 7vw, 6.875rem);
+
+  --wrap:   1280px;
+  --gutter: clamp(1.25rem, 0.6rem + 2vw, 2rem);
+  --radius: 4px;
+}
+
+/* ------------------------------------------------------------------ *
+   2. SIFIRLAMA VE TABAN
+ * ------------------------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+/* sticky başlık, çapa hedeflerini örtmesin */
+html { scroll-padding-top: 6rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p { margin: 0; text-wrap: pretty; }
+
+a { color: var(--brand); text-decoration: none; }
+a:hover { color: var(--brand-dark); }
+
+img { display: block; max-width: 100%; height: auto; }
+
+::selection { background: var(--brand); color: #fff; }
+
+/* tek ve tutarlı odak göstergesi */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.on-dark :focus-visible { outline-color: var(--brand-on-dark); }
+
+/* klavye kullanıcıları için içeriğe atlama */
+.skip-link {
+  position: absolute; left: var(--s2); top: -100%;
+  z-index: 200; background: var(--brand); color: #fff;
+  font-family: var(--font-display); font-weight: 700;
+  padding: var(--s2) var(--s3); border-radius: var(--radius);
+}
+.skip-link:focus { top: var(--s2); color: #fff; }
+
+/* ------------------------------------------------------------------ *
+   3. DÜZEN
+ * ------------------------------------------------------------------ */
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section { padding-block: var(--sec-y); }
+.section--alt  { background: var(--bg-alt); }
+.section--surface {
+  background: var(--surface);
+  border-block: 1px solid var(--line-soft);
+}
+.section--dark {
+  background: var(--dark);
+  color: var(--on-dark);
+  padding-bottom: 0;
+}
+
+/* bölüm başlığı: üst etiket + h2 + açıklama */
+.sec-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: var(--s5); flex-wrap: wrap;
+  margin-bottom: var(--s7);
+}
+.sec-head p {
+  color: var(--ink-muted); font-size: var(--t-sm);
+  max-width: 40ch; margin: 0;
+}
+.eyebrow {
+  font-size: var(--t-xs); font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--brand);
+  margin-bottom: var(--s2);
+}
+.on-dark .eyebrow, .section--dark .eyebrow { color: var(--brand-on-dark); }
+.sec-head h2 { font-size: var(--t-h2); max-width: 24ch; }
+
+/* hücreleri 1px aralıkla ayıran "çizgi ızgarası" —
+   arka plan rengi, boşluklardan çizgi olarak görünür */
+.grid-lines {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.grid-lines > * { background: var(--surface); }
+
+.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+@media (max-width: 1000px) {
+  .cols-3, .cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .cols-6 { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 620px) {
+  .cols-3, .cols-4 { grid-template-columns: 1fr; }
+  .cols-6 { grid-template-columns: repeat(2, 1fr); }
+  .sec-head { margin-bottom: var(--s5); }
+}
+
+/* ------------------------------------------------------------------ *
+   4. BİLEŞENLER
+ * ------------------------------------------------------------------ */
+
+/* --- 4.1 sticky başlık --------------------------------------------- */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line-soft);
+}
+/* Gölge TAM GENİŞLİKTEKİ çubuğa verilir. İçteki ortalanmış
+   sarmalayıcıya verilseydi, bulanıklık içerik kutusunun sol/sağ
+   kenarlarında dikey bant olarak görünürdü. */
+.site-header::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 100%;
+  height: 18px; pointer-events: none;
+  background: linear-gradient(rgba(20, 17, 15, 0.13), rgba(20, 17, 15, 0));
+  opacity: 0;   /* geçişi 5.1'de, hareket koruması altında tanımlı */
+}
+.site-header.is-stuck::after { opacity: 1; }
+
+.header-inner {
+  display: flex; align-items: center; gap: var(--s5);
+  padding-block: 0.875rem;
+}
+.logo-link {
+  display: inline-flex; align-items: center;
+  flex: none; min-height: 44px; border-radius: 3px;
+}
+.logo-link img { height: clamp(38px, 3.4vw, 50px); width: auto; }
+.logo-link:hover { opacity: .78; }
+
+.nav { display: flex; gap: clamp(1rem, 2vw, 1.875rem); margin-inline: auto; }
+.nav a {
+  display: inline-flex; align-items: center;
+  min-height: 44px;               /* dokunma hedefi tabanı */
+  font-family: var(--font-display); font-weight: 600; font-size: var(--t-sm);
+  color: var(--ink);
+  border-bottom: 2px solid transparent;
+}
+.nav a:hover { color: var(--brand); }
+.nav a[aria-current="true"] {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* başlıktaki telefon — tedarikçi sitesinde en sık aranan eylem */
+.header-tel {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  flex: none;
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-sm);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 0.625rem 1.125rem;
+  min-height: 44px;               /* WCAG dokunma hedefi */
+}
+.header-tel:hover { background: var(--brand); border-color: var(--brand); color: #fff; }
+.header-tel svg { flex: none; }
+
+/* mobil menü */
+.nav-toggle {
+  display: none;
+  flex: none; margin-left: auto;
+  width: 44px; height: 44px;
+  align-items: center; justify-content: center;
+  background: none; border: 1px solid var(--line);
+  border-radius: var(--radius); color: var(--ink); cursor: pointer;
+}
+.nav-toggle:hover { background: var(--bg-alt); }
+
+@media (max-width: 900px) {
+  .nav-toggle { display: inline-flex; }
+  .header-tel span { display: none; }
+  .header-tel { padding: 0.625rem; width: 44px; justify-content: center; }
+  .nav {
+    position: absolute; left: 0; right: 0; top: 100%;
+    flex-direction: column; gap: 0;
+    margin: 0; padding: var(--s1) var(--gutter) var(--s3);
+    background: var(--surface);
+    border-bottom: 1px solid var(--line-soft);
+    box-shadow: 0 12px 24px -12px rgba(20, 17, 15, .25);
+  }
+  .nav[hidden] { display: none; }
+  .nav a {
+    padding-block: 0.875rem;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .nav a[aria-current="true"] { border-bottom-color: var(--brand); }
+}
+
+/* --- 4.2 hero ------------------------------------------------------ */
+.hero {
+  position: relative;
+  min-height: clamp(30rem, 62vh + 8rem, 47.5rem);
+  display: flex; align-items: center;
+  background: var(--dark);
+  overflow: hidden;
+}
+.hero > img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.hero::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    rgba(10, 8, 7, 0.90) 0%, rgba(10, 8, 7, 0.66) 45%, rgba(10, 8, 7, 0.28) 100%);
+}
+@media (max-width: 760px) {
+  .hero::after {
+    background: linear-gradient(180deg, rgba(10, 8, 7, 0.55) 0%, rgba(10, 8, 7, 0.9) 65%);
+  }
+}
+.hero .wrap { position: relative; z-index: 1; padding-block: var(--s8); }
+.hero-rule { display: block; width: 44px; height: 2px; background: var(--brand-on-dark); margin-bottom: var(--s3); }
+.hero h1 { font-size: var(--t-hero); font-weight: 800; line-height: 0.98; color: #fff; }
+.hero h1 span { display: block; }
+.hero p {
+  color: var(--on-dark); font-size: var(--t-lead); line-height: 1.55;
+  max-width: 52ch; margin-top: var(--s3);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 48px;
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-sm);
+  padding: 0.875rem 2rem; border-radius: var(--radius);
+  background: var(--brand); color: #fff;
+  /* saydam kenarlık: kenarlıklı varyantlarla aynı yükseklikte kalsın */
+  border: 1px solid transparent;
+}
+.btn:hover { background: var(--brand-dark); color: #fff; }
+.btn--ghost {
+  background: none; color: #fff;
+  border: 1px solid var(--dark-line-2);
+}
+.btn--ghost:hover { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+/* Hero fotoğrafın üzerinde durur; kenarlığı --dark-line-2 yerine
+   yarı saydam beyaz, çünkü altındaki zemin sabit bir renk değil. */
+.btn--outline {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(2px);
+}
+.btn--outline:hover {
+  background: #fff; border-color: #fff; color: var(--ink);
+}
+
+.hero-actions {
+  display: flex; flex-wrap: wrap; gap: 0.875rem;
+  margin-top: var(--s5);
+}
+/* Dar ekranda yan yana sığmıyorlar (341px gerekiyor, 335px var).
+   Kırpışarak farklı genişlikte alt alta düşmek yerine tam genişlik. */
+@media (max-width: 460px) {
+  .hero-actions { flex-direction: column; align-items: stretch; }
+}
+
+/* rakam şeridi */
+.stats {
+  display: flex; flex-wrap: wrap; gap: clamp(1.5rem, 4vw, 3.5rem);
+  margin-top: var(--s7); padding-top: var(--s4);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  max-width: 640px;
+}
+.stats dt {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.625rem, 1.2rem + 1.6vw, 2.375rem);
+  color: #fff; line-height: 1;
+}
+.stats dt small { font-size: 0.45em; color: #C9BDB6; font-weight: 700; }
+.stats dd { margin: 0.375rem 0 0; color: var(--on-dark-muted); font-size: var(--t-sm); }
+
+/* --- 4.3 hakkımızda ------------------------------------------------ */
+.about {
+  display: grid; grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(2rem, 5vw, 4.5rem); align-items: start;
+}
+@media (max-width: 1000px) { .about { grid-template-columns: 1fr; } }
+.about h2 { font-size: var(--t-h2); max-width: 22ch; margin-bottom: var(--s3); }
+.about p + p { margin-top: var(--s2); }
+.about > div > p { color: var(--ink-body); font-size: var(--t-body); line-height: 1.65; }
+
+.values { margin-top: var(--s6); }
+.values > div { padding: var(--s3) var(--s3); }
+.values h3 { font-size: 1.0625rem; margin-bottom: var(--s1); letter-spacing: 0; }
+.values p { font-size: var(--t-sm); line-height: 1.55; color: var(--ink-muted); }
+
+.about figure { margin: 0; }
+.about figure img {
+  width: 100%; aspect-ratio: 1400 / 889; object-fit: cover;
+  border-radius: var(--radius);
+}
+.quote {
+  background: var(--dark-alt); color: #fff;
+  padding: var(--s4) var(--s4); margin-top: 1px;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+.quote blockquote { margin: 0 0 var(--s3); font-size: 1.0625rem; line-height: 1.6; color: var(--on-dark); }
+.quote figcaption b { display: block; font-family: var(--font-display); font-size: 1rem; }
+.quote figcaption span { color: var(--on-dark-faint); font-size: var(--t-sm); }
+
+/* vizyon / misyon / çağrı şeridi */
+.pillars { margin-top: var(--sec-y); }
+.pillars > div { padding: var(--s5) var(--s4); }
+.pillars p { font-size: 1.0625rem; line-height: 1.65; color: var(--ink-body); }
+.pillars .pillar--cta {
+  background: var(--brand); color: #fff;
+  display: flex; flex-direction: column; justify-content: space-between; gap: var(--s5);
+}
+.pillars .pillar--cta strong {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.375rem, 1.1rem + 1.1vw, 1.875rem); line-height: 1.15;
+}
+.pillars .pillar--cta a {
+  align-self: flex-start; color: #fff;
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-sm);
+}
+.pillars .pillar--cta a span {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5); padding-bottom: 4px;
+}
+.pillars .pillar--cta a:hover { color: #fff; }
+.pillars .pillar--cta a:hover span { border-bottom-color: #fff; }
+
+/* --- 4.4 ürün kartları --------------------------------------------- */
+.product { padding: var(--s4) var(--s4) var(--s4); display: flex; flex-direction: column; }
+.product-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--s2); margin-bottom: var(--s3);
+}
+.product h3 { font-size: var(--t-h3); letter-spacing: -0.01em; }
+.product-no { font-family: var(--font-display); font-size: var(--t-xs); color: var(--ink-faint); }
+/* görselin hover'da büyümesi kartı taşırmasın diye kırpan sarmalayıcı */
+.product-media { overflow: hidden; margin-bottom: var(--s3); }
+.product img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+@media (hover: hover) {
+  .product:hover { box-shadow: 0 14px 34px rgba(26, 22, 20, .10); z-index: 1; }
+}
+.product > p { font-size: var(--t-sm); line-height: 1.6; color: var(--ink-muted); margin-bottom: var(--s3); }
+.tags { display: flex; flex-wrap: wrap; gap: 0.4375rem; list-style: none; margin: auto 0 0; padding: 0; }
+.tags li {
+  border: 1px solid #D9D0CA; color: var(--ink-body);
+  font-size: var(--t-xs); padding: 0.375rem 0.6875rem; border-radius: 100px;
+}
+
+/* --- 4.5 marka ızgarası -------------------------------------------- */
+.brands > li { list-style: none; }
+.brands {
+  --line: var(--line-soft);
+  margin: 0; padding: 0;
+}
+.brands li {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 104px; padding: var(--s2);
+}
+.brands img { max-width: 100%; max-height: 64px; object-fit: contain; }
+/* Gri tonlama YALNIZCA fareli cihazlarda. Dokunmatikte :hover
+   tetiklenemediği için logolar kalıcı olarak soluk kalırdı. */
+@media (hover: hover) {
+  .brands img { filter: grayscale(1); opacity: .72; }
+  .brands li:hover img { filter: none; opacity: 1; }
+}
+
+/* --- 4.6 referanslar ----------------------------------------------- */
+.refs { margin: 0; padding: 0; }
+.refs li {
+  list-style: none;
+  display: flex; align-items: center;
+  min-height: 88px; padding: var(--s3) var(--s2) var(--s3) var(--s3);
+  font-size: 0.875rem; line-height: 1.45; font-weight: 500; color: var(--ink-body);
+}
+@media (hover: hover) {
+  .refs li:hover { background: var(--dark); color: #fff; }
+}
+
+/* ok işareti: metinde değil ::after'da — kaydırma animasyonu için
+   ayrı bir kutu gerekiyor, ayrıca ekran okuyucu okumasın diye */
+.has-arrow::after {
+  content: "\2192"; display: inline-block; margin-left: 0.4em;
+}
+.footer-up::after {
+  content: "\2191"; display: inline-block; margin-left: 0.4em;
+}
+
+/* --- 4.7 galeri ----------------------------------------------------- */
+.gallery {
+  display: grid; grid-template-columns: 2fr 1fr 1fr;
+  grid-auto-rows: 230px; gap: 0.875rem;
+}
+/* <figure>'ün tarayıcı varsayılanı 1em 40px'tir; sıfırlanmazsa
+   görseller ızgara hücresinden 80px dar kalır. */
+.gallery figure { margin: 0; }
+.gallery img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius); }
+.gallery > :first-child { grid-row: span 2; }
+@media (max-width: 1000px) {
+  .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 200px; }
+  .gallery > :first-child { grid-row: span 2; }
+}
+@media (max-width: 620px) {
+  .gallery { grid-template-columns: 1fr; }
+  .gallery > :first-child { grid-row: auto; }
+}
+
+/* --- 4.8 iletişim --------------------------------------------------- */
+.contact {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 5rem); align-items: start;
+}
+@media (max-width: 1000px) { .contact { grid-template-columns: 1fr; } }
+.contact h2 { font-size: var(--t-h2); max-width: 20ch; margin-bottom: var(--s3); }
+.contact > div > p {
+  color: var(--on-dark-muted); font-size: var(--t-lead);
+  line-height: 1.6; max-width: 44ch; margin-bottom: var(--s6);
+}
+
+.contact-list { display: grid; gap: var(--s3); max-width: 460px; margin: 0; }
+.contact-list > div {
+  display: flex; gap: var(--s2); align-items: flex-start;
+  padding-bottom: var(--s3); border-bottom: 1px solid var(--dark-line);
+}
+.contact-list > div:last-child { padding-bottom: 0; border-bottom: 0; }
+.contact-list dt {
+  flex: none; width: 82px; padding-top: 0.25rem;
+  font-size: var(--t-xs); letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--on-dark-faint);
+}
+.contact-list dd { margin: 0; }
+/* dokunma hedefi: satır içi bağlantılar da en az 44px yükseklikte */
+.contact-list a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  color: #fff;
+}
+.contact-list a:hover { color: var(--brand-on-dark); }
+.contact-tel a {
+  display: flex; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+}
+.contact-list address { font-style: normal; color: var(--on-dark); line-height: 1.5; }
+
+.map {
+  position: relative; aspect-ratio: 4 / 3.6;
+  border: 1px solid var(--dark-line); background: #1E1815;
+  overflow: hidden; border-radius: var(--radius);
+}
+.map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.contact .btn { margin-top: var(--s3); }
+
+/* --- 4.9 footer ----------------------------------------------------- */
+.site-footer { margin-top: var(--s9); padding-top: var(--s7); position: relative; }
+.site-footer::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--brand) 0%, #4A2A20 22%, var(--dark-line) 55%, var(--dark-line) 100%);
+}
+.footer-top {
+  display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.25fr;
+  gap: clamp(2rem, 4vw, 3.5rem); align-items: start;
+}
+@media (max-width: 1000px) {
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+  .site-footer { margin-top: var(--s7); padding-top: var(--s6); }
+}
+@media (max-width: 620px) { .footer-top { grid-template-columns: 1fr; } }
+
+.footer-brand img { height: 44px; width: auto; opacity: .95; }
+.footer-brand p {
+  color: var(--on-dark-muted); font-size: var(--t-sm); line-height: 1.65;
+  margin: var(--s3) 0; max-width: 42ch;
+}
+.btn-wa {
+  display: inline-flex; align-items: center; gap: 0.5625rem;
+  min-height: 44px;
+  border: 1px solid var(--dark-line-2); border-radius: 100px;
+  padding: 0.625rem 1.125rem;
+  color: #fff; font-family: var(--font-display); font-weight: 700; font-size: 0.875rem;
+}
+.btn-wa:hover { background: var(--whatsapp); border-color: var(--whatsapp); color: #fff; }
+
+.footer-col h2 {
+  font-family: var(--font-display); font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--brand-on-dark); margin-bottom: var(--s2);
+}
+.footer-col ul { list-style: none; margin: 0; padding: 0; }
+.footer-col li + li { margin-top: 0.125rem; }
+.footer-col a {
+  display: flex; align-items: center; min-height: 44px;
+  color: var(--on-dark); font-size: var(--t-sm);
+}
+.footer-col a:hover { color: #fff; }
+.footer-col address {
+  display: block; font-style: normal; color: var(--on-dark-muted);
+  font-size: var(--t-sm); line-height: 1.55; padding-block: 0.4375rem;
+}
+.footer-dir {
+  font-family: var(--font-display); font-weight: 700; font-size: 0.875rem;
+  color: #fff !important;
+}
+.footer-dir span { border-bottom: 2px solid var(--brand-on-dark); padding-bottom: 2px; }
+.footer-dir:hover span { border-bottom-color: #fff; }
+
+.footer-bottom {
+  margin-top: var(--s7); border-top: 1px solid var(--dark-line);
+  padding: var(--s4) 0 var(--s5);
+  display: flex; align-items: center; gap: var(--s3); flex-wrap: wrap;
+}
+.footer-bottom small { color: var(--on-dark-faint); font-size: 0.875rem; }
+.footer-bottom b { color: var(--on-dark-muted); font-weight: 600; }
+.footer-up {
+  margin-left: auto; min-height: 44px;
+  display: inline-flex; align-items: center;
+  color: var(--on-dark-muted); font-family: var(--font-display);
+  font-weight: 700; font-size: 0.875rem;
+  border: 1px solid var(--dark-line); border-radius: 100px; padding: 0.5rem 1rem;
+}
+.footer-up:hover { color: #fff; border-color: var(--brand); background: var(--brand); }
+@media (max-width: 620px) { .footer-up { margin-left: 0; } }
+
+/* --- 4.10 WhatsApp düğmesi ------------------------------------------ */
+.wa-fab {
+  position: fixed; right: clamp(1rem, 2vw, 1.375rem); bottom: clamp(1rem, 2vw, 1.375rem);
+  z-index: 90;
+  width: clamp(54px, 5vw, 60px); aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--whatsapp); color: #fff;
+  box-shadow: 0 10px 28px rgba(18, 140, 70, 0.34);
+}
+.wa-fab:hover { background: #1FB457; color: #fff; }
+
+/* ------------------------------------------------------------------ *
+   5. HAREKET
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* --- 5.1 geçişler ------------------------------------------------- */
+  a, button, .brands img, .site-header::after {
+    transition: background-color .25s ease, border-color .25s ease,
+                color .25s ease, opacity .25s ease, filter .35s ease;
+  }
+  .refs li { transition: background-color .3s ease, color .3s ease; }
+
+  /* Durum değiştiren hover'lar yalnızca fareli cihazlarda.
+     Dokunmatikte :hover, dokunulan öğede "yapışır" ve kullanıcı
+     başka bir yere dokunana kadar kalkık/koyu kalırdı. */
+  @media (hover: hover) {
+    .product { transition: transform .35s cubic-bezier(.2, .7, .3, 1), box-shadow .35s ease; }
+    .product:hover { transform: translateY(-4px); }
+    .product img { transition: transform .65s cubic-bezier(.2, .7, .3, 1); }
+    .product:hover img { transform: scale(1.05); }
+    .has-arrow::after, .footer-up::after { transition: transform .25s cubic-bezier(.2, .7, .3, 1); }
+    .has-arrow:hover::after { transform: translateX(4px); }
+    .footer-up:hover::after { transform: translateY(-3px); }
+  }
+
+  /* --- 5.2 kaydırınca beliriş --------------------------------------- */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      /* Kaydırmaya bağlı animasyonlarda animation-delay ETKİSİZDİR;
+         kademelendirme animation-range kaydırılarak yapılır. */
+      animation-range: entry calc(var(--i, 0) * 4%) entry calc(52% + var(--i, 0) * 4%);
+    }
+  }
+  @keyframes reveal-in {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* Izgara içi dalga. 3'lük çevrim kullanılıyor çünkü sütun sayısı
+     kırılımlara göre 6→3→2 değişiyor; 3'lük çevrim hepsinde düzgün akar. */
+  .brands li:nth-child(3n+2), .refs li:nth-child(3n+2),
+  .product:nth-child(3n+2), .values > div:nth-child(2n+2),
+  .gallery figure:nth-child(3n+2), .footer-top > :nth-child(3n+2) { --i: 1; }
+  .brands li:nth-child(3n+3), .refs li:nth-child(3n+3),
+  .product:nth-child(3n+3), .gallery figure:nth-child(3n+3),
+  .footer-top > :nth-child(3n+3) { --i: 2; }
+
+  /* Firefox yedeği: animation-timeline desteklenmiyorsa app.js
+     <html>'e .js-reveal ekler ve IntersectionObserver ile .is-in verir.
+     JS de yoksa hiçbir kural devreye girmez, içerik baştan görünür. */
+  @supports not (animation-timeline: view()) {
+    html.js-reveal .reveal { opacity: 0; transform: translateY(22px); }
+    html.js-reveal .reveal.is-in {
+      opacity: 1; transform: none;
+      transition: opacity .6s ease, transform .65s cubic-bezier(.22, .61, .36, 1);
+      transition-delay: calc(var(--i, 0) * 70ms);
+    }
+  }
+
+  /* --- 5.3 hero girişi ---------------------------------------------- */
+  .hero h1, .hero p, .hero-actions, .hero .stats {
+    animation: hero-up .85s cubic-bezier(.2, .75, .3, 1) both;
+  }
+  .hero p          { animation-delay: .14s; }
+  .hero-actions    { animation-delay: .28s; }
+  .hero .stats     { animation-delay: .42s; }
+  @keyframes hero-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* --- 5.4 kaydırma ilerleme çubuğu (saf CSS, JS yok) ---------------- */
+  .site-header::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px;
+    background: var(--brand);
+    transform: scaleX(0); transform-origin: 0 50%;
+    animation: scroll-progress linear both;
+    animation-timeline: scroll();
+  }
+  @keyframes scroll-progress { to { transform: scaleX(1); } }
+
+  /* --- 5.5 ürün görselinde maskeleme -------------------------------- */
+  @supports (animation-timeline: view()) {
+    /* Kart yalnızca soluklaşarak gelsin — hareket görselde olacak.
+       Kartın kendi 22px kayması + maskeleme aynı anda fazla gelirdi.
+       Yalnızca animation-name geçersiz kılınıyor; zaman çizelgesi ve
+       aralık .reveal'dan gelmeye devam ediyor. */
+    .product { animation-name: reveal-fade; }
+    @keyframes reveal-fade { from { opacity: 0; } to { opacity: 1; } }
+
+    .product-media img {
+      animation: media-wipe linear both;
+      animation-timeline: view();
+      /* --i kartla aynı: özel değişkenler miras alınır, dalga korunur */
+      animation-range: entry calc(12% + var(--i, 0) * 4%) entry calc(62% + var(--i, 0) * 4%);
+    }
+    /* YALNIZCA clip-path. transform'a dokunulmuyor: fill-mode'u "both"
+       olan bir animasyon bittiğinde değeri tutmaya devam eder ve
+       kaskadda :hover içindeki scale(1.05) bildirimini yenerdi. */
+    @keyframes media-wipe {
+      from { clip-path: inset(100% 0 0 0); }
+      to   { clip-path: inset(0 0 0 0); }
+    }
+  }
+
+  /* --- 5.6 galeri parallax (yalnızca geniş ekran) -------------------- */
+  /* Dar ekranda tek sütun ve 200px hücrelerde derinlik değil titreme
+     gibi okunur; o yüzden 1000px altında hiç devreye girmiyor. */
+  @media (min-width: 1000px) {
+    @supports (animation-timeline: view()) {
+      .gallery figure {
+        position: relative; overflow: hidden; border-radius: var(--radius);
+      }
+      .gallery figure img {
+        position: absolute; top: -10%; left: 0; right: 0;
+        width: 100%; height: 120%;      /* kayacak pay: üstte ve altta %10 */
+        border-radius: 0;               /* kırpma artık figure'da */
+        animation: gallery-parallax linear both;
+        animation-timeline: view();
+        animation-range: cover 0% cover 100%;   /* girerken değil, görünür olduğu sürece */
+      }
+      /* %7 × 1.2 yükseklik = kapsayıcının %8.4'ü; %10 payın içinde kalır */
+      @keyframes gallery-parallax {
+        from { transform: translateY(-7%); }
+        to   { transform: translateY(7%); }
+      }
+    }
+  }
+
+  /* --- 5.7 başlık küçülmesi ----------------------------------------- */
+  .header-inner, .logo-link img {
+    animation: linear both;
+    animation-timeline: scroll();
+    animation-range: 0 170px;
+  }
+  .header-inner  { animation-name: head-shrink; }
+  .logo-link img { animation-name: logo-shrink; }
+  @keyframes head-shrink { to { padding-block: 0.4375rem; } }
+  @keyframes logo-shrink { to { height: 36px; } }
+}
+
+/* ==================================================================== *
+   6. MOBİL DÜZEN
+   Masaüstü düzeninin tek sütuna çökmesi teknik olarak çalışıyordu ama
+   sayfayı 18,2 ekran boyuna çıkarıyordu. Bu bölüm dar ekranı ayrı bir
+   düzen olarak ele alır. Tek blok hâlinde tutuldu: topluca geri alınabilir.
+ * ==================================================================== */
+@media (max-width: 620px) {
+
+  /* --- hero: manşet 4 satıra bölünüyordu --- */
+  .hero { min-height: 34rem; }
+  .hero .wrap { padding-block: var(--s7); }
+  .hero h1 { font-size: 2rem; line-height: 1.05; }
+  /* Zorlanmış satır kırılımını kaldır: dar ekranda "İnşaat Projelerinizde"
+     zaten iki satıra düşüyor ve span'lar 4 satırlık kırık bir blok yapıyordu.
+     Serbest bırakılıp dengelenince 3 dolu satır oluyor. */
+  .hero h1 span { display: inline; }
+  .hero p { font-size: 1rem; margin-top: var(--s2); }
+  .hero-actions { margin-top: var(--s4); }
+  .stats { margin-top: var(--s5); padding-top: var(--s3); gap: var(--s3); }
+
+  /* --- markalar: yatay kaydırılan iki sıralı şerit ---
+     32 logoyu 3 sütuna sıkıştırmak her birini okunmaz hâle getiriyordu.
+     Yatay şeritte logolar tam boyutunda kalır, hepsi erişilebilir olur
+     ve bölüm 1.100px yerine ~180px yer kaplar. */
+  .brands {
+    grid-template-columns: none;
+    grid-template-rows: repeat(2, 88px);
+    grid-auto-flow: column;
+    grid-auto-columns: 42vw;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    /* sağ kenardaki solma "devamı var" işareti */
+    -webkit-mask-image: linear-gradient(90deg, #000 86%, transparent 100%);
+            mask-image: linear-gradient(90deg, #000 86%, transparent 100%);
+  }
+  .brands::-webkit-scrollbar { height: 0; }
+  .brands li { scroll-snap-align: start; min-height: 0; padding: 0.75rem; }
+  .brands img { max-height: 52px; }
+
+  /* --- referanslar: iki sütun, ama metin küçültülmeden --- */
+  .cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .refs li {
+    min-height: 0; padding: 0.875rem 0.75rem;
+    font-size: 0.875rem; line-height: 1.45;
+  }
+
+  /* --- ürün kartları: görsel oranı geri verildi ---
+     2:1 basık şerit dokulu ürünlerde okunmuyordu. */
+  .product { padding: 1.5rem; }
+  .product-head { margin-bottom: var(--s2); }
+  .product img { aspect-ratio: 3 / 2; }
+  .product-media { margin-bottom: var(--s3); }
+  .product > p { margin-bottom: var(--s3); }
+
+  /* --- değerler --- */
+  .values > div { padding: 1.125rem 1rem; }
+
+  /* --- galeri: tek sütun 5×200px yerine iki sütun --- */
+  .gallery {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 132px; gap: 0.5rem;
+  }
+  .gallery > :first-child { grid-row: span 2; }
+
+  /* --- footer: 16 link × 44px = 704px idi --- */
+  .footer-top { grid-template-columns: 1fr 1fr; gap: var(--s3) var(--s2); }
+  .footer-brand { grid-column: 1 / -1; }
+  /* 40px, WCAG 2.2 AA tabanının (24px) hâlâ epey üzerinde */
+  .footer-col a { min-height: 40px; }
+  .footer-col h2 { margin-bottom: var(--s1); }
+  .site-footer { margin-top: var(--s6); padding-top: var(--s5); }
+  .footer-bottom { margin-top: var(--s5); padding: var(--s3) 0 var(--s4); }
+
+  /* --- bölüm ritmi biraz sıkı --- */
+  .sec-head { margin-bottom: var(--s4); gap: var(--s2); }
+  .about { gap: var(--s5); }
+  .pillars > div { padding: var(--s4) 1.25rem; }
+}
+
+@media print {
+  .site-header, .wa-fab, .map, .footer-up { display: none; }
+  body { background: #fff; }
+}
