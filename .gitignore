@@ -1,0 +1,21 @@
+# --- siteye ait olmayan ağır kaynaklar ---
+# 218 MB ham fotoğraf + 217 MB zip. Zip zaten GitHub'ın 100 MB
+# dosya sınırını aşıyor, push reddedilirdi.
+yeni fotolar/
+yeni fotolar.zip
+
+# --- gizli / kurumsal belgeler ---
+# "tüm ürünler.pdf" stok kartları dökümü: ALIŞ FİYATLARI ve tedarikçi
+# cari kayıtları içeriyor. Depoya girmemeli.
+*.pdf
+
+# --- çalışma artıkları ---
+.DS_Store
+_*.html
+Ekran Resmi*.png
+Ekran_Resmi*.png
+
+# --- devre dışı bırakılmış eski sürümler (diskte duruyor) ---
+img/eski/
+img/urun/eski/
+img/marka/eski/

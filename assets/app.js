@@ -154,4 +154,90 @@
       counters.forEach(function (el) { runCount(el); });
     }, 520);
   }
+
+  /* ---- ürün karuseli ------------------------------------------------ */
+  /* Ray JS olmadan da kaydırılabilir (overflow-x). Buradaki tek katkı
+     ok düğmeleri, sayaç ve uç noktalarda pasifleştirme. Düğmeler HTML'de
+     hidden geliyor; JS yoksa ölü kontrol olarak görünmesinler diye. */
+  var ray = document.getElementById("urun-ray");
+  if (ray) {
+    var sarmal = ray.parentElement;
+    var oklar  = sarmal.querySelectorAll(".urun-ok");
+    var sayac  = document.querySelector(".urun-sayac");
+
+    sarmal.setAttribute("data-js", "");
+    oklar.forEach(function (b) { b.hidden = false; });
+    if (sayac) sayac.hidden = false;
+
+    function sayfaSay() { return Math.max(1, Math.round(ray.scrollWidth / ray.clientWidth)); }
+    function suAnki()   { return Math.round(ray.scrollLeft / ray.clientWidth); }
+
+    function tazele() {
+      var i = suAnki(), n = sayfaSay();
+      oklar.forEach(function (b) {
+        var yon = parseInt(b.getAttribute("data-yon"), 10);
+        b.disabled = yon < 0 ? i <= 0 : i >= n - 1;
+      });
+      if (sayac) sayac.innerHTML = "<b>" + (i + 1) + "</b> / " + n;
+    }
+
+    oklar.forEach(function (b) {
+      b.addEventListener("click", function () {
+        var yon = parseInt(b.getAttribute("data-yon"), 10);
+        ray.scrollBy({ left: yon * ray.clientWidth, behavior: still ? "auto" : "smooth" });
+        // scroll olayi bogulursa da durum guncellensin
+        setTimeout(tazele, 450);
+      });
+    });
+
+    var bekle;
+    ray.addEventListener("scroll", function () {
+      clearTimeout(bekle);
+      bekle = setTimeout(tazele, 90);
+    });
+    addEventListener("resize", tazele);
+    tazele();
+  }
+
+  /* ---- ürün listesi katmanı ----------------------------------------- */
+  /* Açma/kapama :target ile CSS'te. Burada eklenen: Escape ile kapatma,
+     odağın katmana taşınması ve kapanınca geri verilmesi, arka planın
+     kaydırılmaması. Hiçbiri olmasa da katman çalışmaya devam eder. */
+  var katmanlar = document.querySelectorAll(".urun-liste");
+  if (katmanlar.length) {
+    var oncekiOdak = null;
+
+    function acik() {
+      var h = location.hash;
+      if (!h || h.length < 2) return null;
+      var el = document.getElementById(h.slice(1));
+      return el && el.classList.contains("urun-liste") ? el : null;
+    }
+
+    function kapat() {
+      if (!acik()) return;
+      // pathname+search ile hash'i düşür: geri tuşuna yeni kayıt eklemez
+      history.replaceState(null, "", location.pathname + location.search);
+      durumTazele();
+    }
+
+    function durumTazele() {
+      var el = acik();
+      document.body.style.overflow = el ? "hidden" : "";
+      if (el) {
+        oncekiOdak = document.activeElement;
+        var kapa = el.querySelector(".urun-liste-kapat");
+        if (kapa) kapa.focus({ preventScroll: true });
+      } else if (oncekiOdak) {
+        oncekiOdak.focus({ preventScroll: true });
+        oncekiOdak = null;
+      }
+    }
+
+    addEventListener("hashchange", durumTazele);
+    addEventListener("keydown", function (e) {
+      if (e.key === "Escape") kapat();
+    });
+    durumTazele();
+  }
 })();

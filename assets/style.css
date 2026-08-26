@@ -15,9 +15,15 @@
  * ------------------------------------------------------------------ */
 :root {
   /* --- marka --- */
-  --brand:          #9A3B26;   /* terracotta — açık zeminde 6.94:1 */
-  --brand-dark:     #7A2B18;   /* hover                    9.61:1 */
-  --brand-on-dark:  #D26047;   /* koyu zeminde marka tonu  4.93:1 */
+  --brand:          #5C221A;   /* koyu kestane — açık zeminde 11.28:1 */
+  --brand-hover:    #7E3025;   /* hover                        8.20:1 */
+  --brand-on-dark:  #BC675C;   /* koyu zeminde marka tonu      4.69:1 */
+  /* Hover jetonu bilerek marka renginden AÇIK. Eski #9A3B26 için "daha koyu"
+     mantikliydi; #5C221A zaten %23 aydinlikta, daha da koyulastirmak kullaniciya
+     hicbir geri bildirim vermiyordu. Adi bu yuzden --brand-dark degil.
+     --brand-on-dark ayri durur cunku #5C221A koyu zeminde yalnizca 1.52:1
+     veriyor — okunmaz. Marka rengini degistirirseniz UCUNU BIRDEN guncelleyin,
+     ayrica index.html'deki theme-color ve site.webmanifest'teki theme_color. */
 
   /* --- açık zemin --- */
   --bg:        #F7F4F1;
@@ -109,7 +115,7 @@ h1, h2, h3 {
 p { margin: 0; text-wrap: pretty; }
 
 a { color: var(--brand); text-decoration: none; }
-a:hover { color: var(--brand-dark); }
+a:hover { color: var(--brand-hover); }
 
 img { display: block; max-width: 100%; height: auto; }
 
@@ -227,7 +233,11 @@ img { display: block; max-width: 100%; height: auto; }
   display: inline-flex; align-items: center;
   flex: none; min-height: 44px; border-radius: 3px;
 }
-.logo-link img { height: clamp(38px, 3.4vw, 50px); width: auto; }
+.logo-link img { height: clamp(36px, 3vw, 46px); width: auto; }
+/* Logodan "YAPI MALZEMELERI A.S." alt satiri ve beyaz zemin kaldirildi;
+   kutu 500x182'den 419x109'a dustu. Yukseklik aynen kalsaydi isaret bir
+   anda ~1,7 kat buyurdu. Bu degerler basliktaki genisligi eskisiyle
+   (~137px) hemen hemen ayni tutar, yaziyi ise okunur bicimde buyutur. */
 .logo-link:hover { opacity: .78; }
 
 .nav { display: flex; gap: clamp(1rem, 2vw, 1.875rem); margin-inline: auto; }
@@ -292,7 +302,7 @@ img { display: block; max-width: 100%; height: auto; }
 /* --- 4.2 hero ------------------------------------------------------ */
 .hero {
   position: relative;
-  min-height: clamp(30rem, 62vh + 8rem, 47.5rem);
+  min-height: clamp(34rem, 78vh + 6rem, 55rem);
   display: flex; align-items: center;
   background: var(--dark);
   overflow: hidden;
@@ -304,12 +314,24 @@ img { display: block; max-width: 100%; height: auto; }
 }
 .hero::after {
   content: ""; position: absolute; inset: 0;
+  /* Metin ekranin sol %60'inda duruyor; sagi karartmanin kontrast gerekcesi
+     yok. Sol iki durak metin icin korundu, sag taraf acildi: sag yaridaki
+     ortalama karartma %42 -> %20. Gercek metin kutularinda olculen kontrast
+     (95. yuzdelik parlaklik): h1 6.00, paragraf 4.93, sayac 8.03,
+     sayac etiketi 5.33 - dordu de AA ustunde. Duraklari kaydirirsaniz
+     ozellikle 42% ve 68% degerlerine dikkat: metin orada bitiyor. */
   background: linear-gradient(90deg,
-    rgba(10, 8, 7, 0.90) 0%, rgba(10, 8, 7, 0.66) 45%, rgba(10, 8, 7, 0.28) 100%);
+    rgba(10, 8, 7, 0.88) 0%, rgba(10, 8, 7, 0.66) 42%,
+    rgba(10, 8, 7, 0.28) 68%, rgba(10, 8, 7, 0.04) 100%);
 }
 @media (max-width: 760px) {
   .hero::after {
-    background: linear-gradient(180deg, rgba(10, 8, 7, 0.55) 0%, rgba(10, 8, 7, 0.9) 65%);
+    /* Dar ekranda metin neredeyse tum yuksekligi kapliyor, o yuzden alt
+       taraf koyu kaliyor. Ustteki serit bos: oradaki karartma %60 -> %33.
+       Olculen kontrast: h1 5.96, paragraf 5.27, sayac 17.4, etiket 6.74. */
+    background: linear-gradient(180deg,
+      rgba(10, 8, 7, 0.22) 0%, rgba(10, 8, 7, 0.60) 30%,
+      rgba(10, 8, 7, 0.86) 60%, rgba(10, 8, 7, 0.92) 100%);
   }
 }
 .hero .wrap { position: relative; z-index: 1; padding-block: var(--s8); }
@@ -330,12 +352,15 @@ img { display: block; max-width: 100%; height: auto; }
   /* saydam kenarlık: kenarlıklı varyantlarla aynı yükseklikte kalsın */
   border: 1px solid transparent;
 }
-.btn:hover { background: var(--brand-dark); color: #fff; }
+.btn:hover { background: var(--brand-hover); color: #fff; }
 .btn--ghost {
   background: none; color: #fff;
   border: 1px solid var(--dark-line-2);
 }
-.btn--ghost:hover { background: var(--brand); border-color: var(--brand); color: #fff; }
+/* Koyu zeminde dolgu olarak var(--brand) kullanilamaz: #5C221A, #14110F
+   uzerinde 1.52:1 veriyor ve buton zemine karisiyor. --brand-hover (%33
+   aydinlik) hem ayrisiyor hem uzerindeki beyaz yaziyi 9.0:1'de tutuyor. */
+.btn--ghost:hover { background: var(--brand-hover); border-color: var(--brand-hover); color: #fff; }
 
 /* Hero fotoğrafın üzerinde durur; kenarlığı --dark-line-2 yerine
    yarı saydam beyaz, çünkü altındaki zemin sabit bir renk değil. */
@@ -389,19 +414,28 @@ img { display: block; max-width: 100%; height: auto; }
 .values h3 { font-size: 1.0625rem; margin-bottom: var(--s1); letter-spacing: 0; }
 .values p { font-size: var(--t-sm); line-height: 1.55; color: var(--ink-muted); }
 
-.about figure { margin: 0; }
-.about figure img {
-  width: 100%; aspect-ratio: 1400 / 889; object-fit: cover;
+/* Depo gorseli ve yonetim kurulu alintisi kaldirildi; ayni izgara hucresine
+   PDF kapagindaki slogan geldi. Kosegen ayrim da kapaktan aliniyor. */
+.motto {
+  align-self: stretch;          /* .about'un align-items:start degerini ezer */
+  display: grid; place-items: center;
+  min-height: 22rem;
+  padding: var(--s7) var(--s4);
   border-radius: var(--radius);
+  background:
+    linear-gradient(146deg, rgba(255,255,255,0.06) 0 44%, rgba(0,0,0,0.18) 44%),
+    var(--brand);
+  color: #fff;
 }
-.quote {
-  background: var(--dark-alt); color: #fff;
-  padding: var(--s4) var(--s4); margin-top: 1px;
-  border-radius: 0 0 var(--radius) var(--radius);
+/* Slogan web fontu degil, GORSEL. Kurumsal PDF'in kullandigi Libel Suit
+   ticari bir font; web'e gomulmesi ayri lisans isterdi. Yazi dogrudan PDF'ten
+   cikarildi: beyaz metin kirmizi zeminden alfa kanalina ayristirildi (gri
+   acilimla zemin kestirildi, kanallar uzerinden kapsama orani hesaplandi),
+   virgulden ikiye bolunup ust uste dizildi. Beyaz oldugu icin dosya gri+alfa
+   (LA) PNG olarak kaydedildi - RGBA'ya gore %22 kucuk. */
+.motto img {
+  width: 100%; max-width: 30rem; height: auto;
 }
-.quote blockquote { margin: 0 0 var(--s3); font-size: 1.0625rem; line-height: 1.6; color: var(--on-dark); }
-.quote figcaption b { display: block; font-family: var(--font-display); font-size: 1rem; }
-.quote figcaption span { color: var(--on-dark-faint); font-size: var(--t-sm); }
 
 /* vizyon / misyon / çağrı şeridi */
 .pillars { margin-top: var(--sec-y); }
@@ -447,22 +481,159 @@ img { display: block; max-width: 100%; height: auto; }
   font-size: var(--t-xs); padding: 0.375rem 0.6875rem; border-radius: 100px;
 }
 
+/* --- 4.4b ürün karuseli (2 sayfa × 6 grup) --------------------------
+   Ray JS'siz de calisir: overflow-x ile kaydirilabilir, dokunmatikte
+   parmakla surulur. Oklar ve sayac JS ile aciliyor (HTML'de hidden),
+   cunku JS yoksa olu birer kontrol olurlardi. */
+.urun-kaydirak { position: relative; }
+.urun-ray {
+  display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+  scroll-behavior: smooth; scrollbar-width: thin;
+}
+/* Cubugu yalnizca oklar devredeyken gizle - JS yoksa tek kaydirma yolu odur. */
+.urun-kaydirak[data-js] .urun-ray { scrollbar-width: none; }
+.urun-kaydirak[data-js] .urun-ray::-webkit-scrollbar { display: none; }
+.urun-sayfa { flex: 0 0 100%; min-width: 100%; scroll-snap-align: start; }
+
+.urun-ok {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 46px; height: 46px; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 20px rgba(26, 22, 20, .14);
+  z-index: 2;
+}
+.urun-ok--geri  { left: -23px; }
+.urun-ok--ileri { right: -23px; }
+.urun-ok:hover:not(:disabled) { background: var(--brand); border-color: var(--brand); color: #fff; }
+.urun-ok:disabled { opacity: .3; cursor: default; box-shadow: none; }
+/* Dar ekranda ok kutunun disina tasmasin */
+@media (max-width: 1400px) {
+  .urun-ok--geri  { left: 6px; }
+  .urun-ok--ileri { right: 6px; }
+}
+.urun-sayac {
+  margin: var(--s2) 0 0; text-align: right;
+  font-family: var(--font-display); font-size: var(--t-sm); color: var(--ink-muted);
+}
+.urun-sayac b { color: var(--ink); }
+
+/* --- kart baglantisi ---
+   Baslikta tek bir gercek baglanti var; ::after tum karti tiklanabilir
+   yapiyor. Kartin tamamini <a> icine almak basliktan once uzun bir
+   erisilebilir ad uretirdi. */
+.product { position: relative; }
+.product-link { color: var(--ink); }
+.product-link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.product:hover .product-link { color: var(--brand); }
+.product-link:focus-visible { outline: none; }
+.product:has(.product-link:focus-visible) { outline: 2px solid var(--brand); outline-offset: -2px; }
+
+/* Fotograflar gelene kadar gecici blok. <img> geldiginde bu sinif silinir. */
+.product-media--bos {
+  aspect-ratio: 16 / 10; display: grid; place-items: center;
+  background: linear-gradient(146deg, var(--bg-alt) 0 46%, var(--bg) 46%);
+  border: 1px solid var(--line-soft);
+}
+.product-media--bos span {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 2.5rem; color: var(--line); letter-spacing: -0.03em;
+}
+
+/* --- 4.4c ürün listesi katmani -------------------------------------
+   :target ile aciliyor, yani JS OLMADAN da calisiyor. app.js yalnizca
+   Escape ile kapatma, odak yonetimi ve arka plan kaydirma kilidi ekler. */
+.urun-liste {
+  position: fixed; inset: 0; z-index: 300;
+  display: none; place-items: center;
+  padding: var(--s3);
+  background: rgba(20, 17, 15, .62);
+}
+.urun-liste:target { display: grid; }
+.urun-liste-ort { position: absolute; inset: 0; }
+.urun-liste-kutu {
+  position: relative; z-index: 1;
+  width: min(46rem, 100%); max-height: min(85vh, 44rem); overflow-y: auto;
+  background: var(--surface); border-radius: var(--radius);
+  padding: var(--s4) var(--s4) var(--s3);
+}
+.urun-liste-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--s3); margin-bottom: var(--s3);
+  border-bottom: 1px solid var(--line); padding-bottom: var(--s2);
+}
+.urun-liste-head h3 { font-size: var(--t-h3); }
+.urun-liste-kapat {
+  flex: none; display: grid; place-items: center;
+  width: 44px; height: 44px; margin: -6px -6px 0 0;
+  font-size: 1.75rem; line-height: 1; color: var(--ink-muted);
+  border-radius: 50%;
+}
+.urun-liste-kapat:hover { background: var(--bg-alt); color: var(--ink); }
+.urun-liste-items {
+  list-style: none; margin: 0; padding: 0;
+  columns: 2; column-gap: var(--s4);
+  font-size: var(--t-sm); line-height: 1.5;
+}
+.urun-liste-items li {
+  break-inside: avoid; padding: 0.4375rem 0 0.4375rem 1.125rem;
+  position: relative; color: var(--ink-body);
+}
+.urun-liste-items li::before {
+  content: ""; position: absolute; left: 0; top: 1rem;
+  width: 5px; height: 5px; border-radius: 50%; background: var(--brand);
+}
+@media (max-width: 620px) { .urun-liste-items { columns: 1; } }
+.urun-liste-not {
+  margin-top: var(--s3); padding-top: var(--s2);
+  border-top: 1px solid var(--line);
+  font-size: var(--t-xs); color: var(--ink-muted);
+}
+
 /* --- 4.5 marka ızgarası -------------------------------------------- */
 .brands > li { list-style: none; }
 .brands {
-  --line: var(--line-soft);
   margin: 0; padding: 0;
+  /* .grid-lines'in tekniginden BILEREK ayriliyor. Orada cizgiler kabin
+     zemininden 1px'lik bosluklardan sizar; marka sayisi sutuna tam
+     bolunmeyince son satirda hucre kalmayan alan da o rengi gosteriyordu.
+     Burada cizgiler hucrelerin kenarligi: hucre yoksa cizgi de yok, izgara
+     son logodan sonra kendiliginden biter. */
+  gap: 0;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--line-soft);
+  border-left: 1px solid var(--line-soft);
 }
 .brands li {
+  border-right: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+}
+.brands li { position: relative; min-height: 104px; }
+/* Logo, animasyonu OLMAYAN bir <span> icinde duruyor. Sebep: .brands li ayni
+   zamanda .reveal ve o animasyon transform'a yaziyor; animation-fill-mode:
+   both oldugu icin bittikten sonra da degerini tutup kaskadda normal
+   bildirimleri yeniyor. Hucreye stil sayfasindan verilen transform DA scale DA
+   hic uygulanmiyordu (olculdu). Sarmalayicinin animasyonu yok, hover'da
+   serbestce buyuyor. */
+.brands li > span {
+  position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  min-height: 104px; padding: var(--s2);
+  padding: var(--s2);
+  background: var(--surface);
 }
 .brands img { max-width: 100%; max-height: 64px; object-fit: contain; }
-/* Gri tonlama YALNIZCA fareli cihazlarda. Dokunmatikte :hover
-   tetiklenemediği için logolar kalıcı olarak soluk kalırdı. */
+/* Logolar her zaman renkli. (Onceden fareli cihazlarda grayscale(1) +
+   opacity .72 vardi, renk yalnizca hover'da geliyordu.) */
 @media (hover: hover) {
-  .brands img { filter: grayscale(1); opacity: .72; }
-  .brands li:hover img { filter: none; opacity: 1; }
+  /* Hucre one cikar: ust katmana gecer, golge alir ve 1px'lik izgara
+     cizgilerinin uzerine tasar. Sarmalayicinin zemini var --surface oldugu
+     icin buyurken altindaki komsulari ve cizgiyi kapatir. */
+  .brands li:hover { z-index: 2; }
+  .brands li:hover > span {
+    box-shadow: 0 14px 34px rgba(26, 22, 20, 0.20);
+  }
 }
 
 /* --- 4.6 referanslar ----------------------------------------------- */
@@ -471,7 +642,13 @@ img { display: block; max-width: 100%; height: auto; }
   list-style: none;
   display: flex; align-items: center;
   min-height: 88px; padding: var(--s3) var(--s2) var(--s3) var(--s3);
-  font-size: 0.875rem; line-height: 1.45; font-weight: 500; color: var(--ink-body);
+  /* Govde fontu (Barlow) yerine baslik fontu (Archivo): Barlow yari-daralt-
+     ilmis bir grotesk, 14px'te bu uzun ticari unvanlar ("... San. ve Tic.
+     Ltd. Sti.") sikisik okunuyordu. Archivo daha genis ve acik apertürlü,
+     Turkce aksanlarini (g / s / i / I) 15px'te net ayiriyor. Yeni bir aile
+     indirilmiyor - Archivo zaten yukleniyordu, sadece 500 agirligi eklendi. */
+  font-family: var(--font-display);
+  font-size: 0.9375rem; line-height: 1.5; font-weight: 500; color: var(--ink-body);
 }
 @media (hover: hover) {
   .refs li:hover { background: var(--dark); color: #fff; }
@@ -553,10 +730,10 @@ img { display: block; max-width: 100%; height: auto; }
 .site-footer { margin-top: var(--s9); padding-top: var(--s7); position: relative; }
 .site-footer::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, var(--brand) 0%, #4A2A20 22%, var(--dark-line) 55%, var(--dark-line) 100%);
+  background: linear-gradient(90deg, var(--brand-on-dark) 0%, #4A2A20 22%, var(--dark-line) 55%, var(--dark-line) 100%);
 }
 .footer-top {
-  display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.25fr;
+  display: grid; grid-template-columns: 1.4fr 0.85fr 1.6fr 1.15fr;
   gap: clamp(2rem, 4vw, 3.5rem); align-items: start;
 }
 @media (max-width: 1000px) {
@@ -580,6 +757,33 @@ img { display: block; max-width: 100%; height: auto; }
 }
 .btn-wa:hover { background: var(--whatsapp); border-color: var(--whatsapp); color: #fff; }
 
+/* Calisma saatleri marka sutununda duruyor: olculen sutun yuksekliklerinde
+   marka 235px ile en kisaydi, digerleri 303/303/269. Blok oraya konunca
+   sutunlar dengeleniyor; Iletisim sutununa eklenseydi o sutun ~350px'e
+   cikip tek basina tasardi. */
+.footer-hours-title {
+  font-family: var(--font-display); font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--brand-on-dark); margin: 0 0 var(--s1);
+}
+.footer-hours {
+  margin: 0 0 var(--s3); max-width: 22rem;
+  font-size: var(--t-sm); line-height: 1.55;
+}
+.footer-hours > div {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--s2); padding-block: 0.375rem;
+  border-bottom: 1px solid var(--dark-line);
+}
+.footer-hours > div:last-child { border-bottom: 0; }
+.footer-hours dt { color: var(--on-dark-muted); }
+.footer-hours dd {
+  margin: 0; color: var(--on-dark);
+  /* saatler alt alta hizali kalsin diye tablo rakamlari */
+  font-variant-numeric: tabular-nums;
+}
+.footer-hours .is-closed { color: var(--on-dark-faint); }
+
 .footer-col h2 {
   font-family: var(--font-display); font-size: 0.75rem; font-weight: 700;
   letter-spacing: 0.18em; text-transform: uppercase;
@@ -592,6 +796,17 @@ img { display: block; max-width: 100%; height: auto; }
   color: var(--on-dark); font-size: var(--t-sm);
 }
 .footer-col a:hover { color: #fff; }
+/* Urun gruplari 6'dan 12'ye cikinca bu sutun 579px'e uzayip digerlerini
+   (269-352) tek basina asiyordu. Iki alt sutuna bolundu; dokunma hedefi
+   36px'e indi - WCAG 2.2 tabani olan 24px'in hala uzerinde. */
+.footer-col--urun ul { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--s2); }
+.footer-col--urun li + li { margin-top: 0; }
+.footer-col--urun a { min-height: 36px; }
+@media (max-width: 620px) {
+  .footer-col--urun ul { grid-template-columns: 1fr; }
+  .footer-col--urun a { min-height: 40px; }
+}
+
 .footer-col address {
   display: block; font-style: normal; color: var(--on-dark-muted);
   font-size: var(--t-sm); line-height: 1.55; padding-block: 0.4375rem;
@@ -617,7 +832,7 @@ img { display: block; max-width: 100%; height: auto; }
   font-weight: 700; font-size: 0.875rem;
   border: 1px solid var(--dark-line); border-radius: 100px; padding: 0.5rem 1rem;
 }
-.footer-up:hover { color: #fff; border-color: var(--brand); background: var(--brand); }
+.footer-up:hover { color: #fff; border-color: var(--brand-hover); background: var(--brand-hover); }
 @media (max-width: 620px) { .footer-up { margin-left: 0; } }
 
 /* --- 4.10 WhatsApp düğmesi ------------------------------------------ */
@@ -638,7 +853,7 @@ img { display: block; max-width: 100%; height: auto; }
 @media (prefers-reduced-motion: no-preference) {
 
   /* --- 5.1 geçişler ------------------------------------------------- */
-  a, button, .brands img, .site-header::after {
+  a, button, .site-header::after {
     transition: background-color .25s ease, border-color .25s ease,
                 color .25s ease, opacity .25s ease, filter .35s ease;
   }
@@ -652,6 +867,14 @@ img { display: block; max-width: 100%; height: auto; }
     .product:hover { transform: translateY(-4px); }
     .product img { transition: transform .65s cubic-bezier(.2, .7, .3, 1); }
     .product:hover img { transform: scale(1.05); }
+    /* transform DEGIL, bagimsiz `scale` ozelligi kullaniliyor. Sebep:
+       .brands li ayni zamanda .reveal ve o animasyon transform'a yaziyor;
+       animation-fill-mode: both oldugu icin bittikten sonra da degerini
+       tutar ve kaskadda normal bildirimleri yener - hover'daki
+       transform: scale() hic calismazdi. `scale` ayri bir ozellik oldugu
+       icin animasyonun transform'uyla catismadan onun uzerine biner. */
+    .brands li > span { transition: transform .3s cubic-bezier(.2, .7, .3, 1), box-shadow .3s ease; }
+    .brands li:hover > span { transform: scale(1.12); }
     .has-arrow::after, .footer-up::after { transition: transform .25s cubic-bezier(.2, .7, .3, 1); }
     .has-arrow:hover::after { transform: translateX(4px); }
     .footer-up:hover::after { transform: translateY(-3px); }
@@ -772,7 +995,7 @@ img { display: block; max-width: 100%; height: auto; }
   .header-inner  { animation-name: head-shrink; }
   .logo-link img { animation-name: logo-shrink; }
   @keyframes head-shrink { to { padding-block: 0.4375rem; } }
-  @keyframes logo-shrink { to { height: 36px; } }
+  @keyframes logo-shrink { to { height: 33px; } }
 }
 
 /* ==================================================================== *
@@ -784,7 +1007,7 @@ img { display: block; max-width: 100%; height: auto; }
 @media (max-width: 620px) {
 
   /* --- hero: manşet 4 satıra bölünüyordu --- */
-  .hero { min-height: 34rem; }
+  .hero { min-height: 40rem; }
   .hero .wrap { padding-block: var(--s7); }
   .hero h1 { font-size: 2rem; line-height: 1.05; }
   /* Zorlanmış satır kırılımını kaldır: dar ekranda "İnşaat Projelerinizde"
@@ -812,15 +1035,29 @@ img { display: block; max-width: 100%; height: auto; }
             mask-image: linear-gradient(90deg, #000 86%, transparent 100%);
   }
   .brands::-webkit-scrollbar { height: 0; }
-  .brands li { scroll-snap-align: start; min-height: 0; padding: 0.75rem; }
+  .brands li { scroll-snap-align: start; min-height: 0; }
+  .brands li > span { padding: 0.75rem; }
   .brands img { max-height: 52px; }
+
+  /* --- slogan paneli: 22rem gorseli tek satirlik yaziya gore olculmustu.
+         Gorselle birlikte panel 352px olup icinde 109px'lik yazi kaliyor,
+         243px bos kirmizi aciliyordu. --- */
+  .motto { min-height: 14rem; padding: var(--s5) var(--s3); }
 
   /* --- referanslar: iki sütun, ama metin küçültülmeden --- */
   .cols-4 { grid-template-columns: repeat(2, 1fr); }
   .refs li {
     min-height: 0; padding: 0.875rem 0.75rem;
-    font-size: 0.875rem; line-height: 1.45;
+    font-size: 0.9375rem; line-height: 1.5;
   }
+
+  /* --- ürün karuseli mobilde kapali ---
+     Tek sutunda bir sayfa 6 kart yuksekliginde oluyordu; yana kaydirmak
+     yerine 12 kart alt alta akiyor. */
+  .urun-ray { display: block; overflow: visible; }
+  .urun-sayfa + .urun-sayfa { border-top: 0; }
+  .urun-ok, .urun-sayac { display: none; }
+  .urun-liste-kutu { padding: var(--s3) var(--s3) var(--s2); }
 
   /* --- ürün kartları: görsel oranı geri verildi ---
      2:1 basık şerit dokulu ürünlerde okunmuyordu. */
