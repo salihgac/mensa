@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E-Katalog — Mensa Yapı Malzemeleri A.Ş.</title>
+<meta name="description" content="Mensa Yapı Malzemeleri A.Ş. e-katalog: 12 ürün grubu, 38 marka, 6.500 m² depo.">
+<meta name="theme-color" content="#5C221A">
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&amp;display=swap">
+<style>
+  /* Bagimsiz, kucuk bir sayfa: assets/style.css'in tamami (40 KB, tum
+     bolum stilleri) burada bos yere yuklenmesin diye jetonlar elle
+     kopyalandi. Marka rengini degistirirseniz orayla birlikte guncelleyin. */
+  :root { --brand:#5C221A; --brand-hover:#7E3025; --dark:#14110F; --bg:#F7F4F1;
+          --line:#E2DBD6; --ink:#1A1614; --ink-muted:#6E645F; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; display: flex; flex-direction: column;
+    background: var(--bg); color: var(--ink);
+    font-family: Archivo, "Helvetica Neue", Arial, sans-serif;
+  }
+  .bar {
+    flex: none; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    padding: 0.75rem 1.25rem;
+    background: #fff; border-bottom: 1px solid var(--line);
+  }
+  .bar img { height: 34px; width: auto; }
+  .bar h1 { font-size: 1rem; font-weight: 700; margin: 0; letter-spacing: 0.02em; }
+  .bar .sep { flex: 1 1 auto; }
+  .bar a {
+    display: inline-flex; align-items: center; min-height: 40px;
+    padding: 0.5rem 1rem; border-radius: 4px;
+    font-size: 0.875rem; font-weight: 700; text-decoration: none;
+  }
+  .bar .geri { color: var(--ink-muted); }
+  .bar .geri:hover { color: var(--ink); }
+  .bar .indir { background: var(--brand); color: #fff; }
+  .bar .indir:hover { background: var(--brand-hover); }
+  /* Goruntuleyici. PDF sayfa icinde acilir - ust duzey gezinmeye bagli
+     "PDF'leri indir" ayarindan etkilenmez, bos sekme sorunu cikmaz.
+     <object> DEGIL <iframe> kullaniliyor: Safari eklenti destegini
+     kaldirdigindan beri <object>/<embed> icindeki PDF'i hic cizmiyor
+     (bembeyaz alan), <iframe> ise her iki tarayicida da calisiyor.
+     <iframe>'in yedek icerigi olmadigi icin indirme baglantisi ust
+     cubukta HER ZAMAN duruyor - iOS Safari yalnizca ilk sayfayi
+     gosterdiginde kullanici oradan indirebilir. */
+  .goruntule { flex: 1 1 auto; min-height: 0; background: var(--dark); }
+  .goruntule iframe { width: 100%; height: 100%; border: 0; display: block; }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a class="geri" href="index.html" aria-label="Siteye dön"><img src="img/logo.png" width="419" height="109" alt="Mensa"></a>
+  <h1>E-Katalog</h1>
+  <span class="sep"></span>
+  <a class="geri" href="index.html">← Siteye dön</a>
+  <a class="indir" href="katalog/mensa-e-katalog.pdf" download="Mensa-E-Katalog.pdf">PDF indir</a>
+</div>
+
+<div class="goruntule">
+  <iframe src="katalog/mensa-e-katalog.pdf" title="Mensa Yapı Malzemeleri e-katalog"></iframe>
+</div>
+
+</body>
+</html>

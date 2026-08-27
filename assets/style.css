@@ -177,6 +177,33 @@ img { display: block; max-width: 100%; height: auto; }
   margin-bottom: var(--s2);
 }
 .on-dark .eyebrow, .section--dark .eyebrow { color: var(--brand-on-dark); }
+
+/* Bolum etiketi (Hakkimizda / Urun Gruplari / Markalar ...). Kart ici
+   etiketlerden (Vizyon, Urun Grubu 01, Konum) BILEREK ayriliyor: kullanici
+   sayfayi kaydirirken hangi bolumde oldugunu 13px'lik bir satirdan cok
+   gec fark ediyordu. Buyurken harf araligi 0.2em'den kisaltiliyor -
+   bosluk punto ile birlikte buyuyunce kelime dagiliyor. */
+/* Secici .sec-head ile de yaziliyor: yukaridaki `.sec-head p` kurali
+   (0,1,1) tek basina `.eyebrow--lg`den (0,1,0) daha ozgul, renk / punto /
+   margin bildirimlerini yiyordu. */
+.eyebrow--lg,
+.sec-head .eyebrow--lg {
+  font-size: clamp(0.9375rem, 0.86rem + 0.35vw, 1.125rem); /* 15 → 18px */
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--brand);
+  margin-bottom: var(--s3);
+  /* Etiketin onundeki marka rengi cizgi: bolum basligini kaydirirken
+     gozun yakaladigi ilk isaret. currentColor kullaniliyor ki koyu
+     zeminli bolumde (--brand-on-dark) yaziyla birlikte donsun. */
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.eyebrow--lg::before {
+  content: ""; flex: none;
+  width: 1.75rem; height: 2px;
+  background: currentColor;
+}
+.on-dark .eyebrow--lg, .section--dark .eyebrow--lg { color: var(--brand-on-dark); }
 .sec-head h2 { font-size: var(--t-h2); max-width: 24ch; }
 
 /* hücreleri 1px aralıkla ayıran "çizgi ızgarası" —
@@ -636,10 +663,53 @@ img { display: block; max-width: 100%; height: auto; }
   }
 }
 
+/* --- 4.5b e-katalog cagrisi ---------------------------------------- */
+/* Urun Gruplari basliginin sag kolonunda duruyordu: aciklama cumlesinin
+   yerini aldi. .sec-head bir flex satiri, sag ucta hizalanir. */
+.katalog-cta {
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 0.5rem;
+}
+.katalog-cta .btn { gap: 0.5rem; }
+/* Secici .sec-head ile yaziliyor: `.sec-head p` (0,1,1) tek basina
+   `.katalog-meta`dan (0,1,0) daha ozgul, punto ve rengi eziyordu. */
+.katalog-meta,
+.sec-head .katalog-meta {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--t-xs); color: var(--ink-faint);
+  letter-spacing: 0.04em;
+}
+@media (max-width: 620px) {
+  /* Tek sutuna dusunce buton satiri doldursun - 48px'lik dokunma hedefi
+     ekranin ortasinda yalniz kalmasin. align-self: stretch ISE YARAMAZ:
+     .sec-head satir yonlu bir flex, orada stretch dikey ekseni buyutur. */
+  .katalog-cta { width: 100%; }
+  .katalog-cta .btn { width: 100%; }
+}
+
 /* --- 4.6 referanslar ----------------------------------------------- */
 .refs { margin: 0; padding: 0; }
+/* HTML'de .grid-lines duruyor ama cizgi teknigi burada .brands'teki gibi
+   degistiriliyor: orada cizgiler kabin zemininden 1px'lik bosluklardan
+   sizar, referans sayisi sutuna tam bolunmeyince son satirda hucre kalmayan
+   alan da o koyu zemini gosteriyordu (bos kutucuk). Burada cizgiler
+   hucrelerin kenarligi - hucre yoksa cizgi de yok, izgara son referanstan
+   sonra kendiliginden biter. */
+.refs {
+  gap: 0;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
 .refs li {
   list-style: none;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  /* one cikma icin: hucre hover'da buyuyup komsularin ve 1px'lik izgara
+     cizgilerinin uzerine tasiyor, bunun icin kendi yigin baglami gerekiyor. */
+  position: relative;
   display: flex; align-items: center;
   min-height: 88px; padding: var(--s3) var(--s2) var(--s3) var(--s3);
   /* Govde fontu (Barlow) yerine baslik fontu (Archivo): Barlow yari-daralt-
@@ -651,7 +721,11 @@ img { display: block; max-width: 100%; height: auto; }
   font-size: 0.9375rem; line-height: 1.5; font-weight: 500; color: var(--ink-body);
 }
 @media (hover: hover) {
-  .refs li:hover { background: var(--dark); color: #fff; }
+  .refs li:hover {
+    background: var(--dark); color: #fff;
+    z-index: 2;
+    box-shadow: 0 18px 40px rgba(26, 22, 20, 0.26);
+  }
 }
 
 /* ok işareti: metinde değil ::after'da — kaydırma animasyonu için
@@ -875,6 +949,12 @@ img { display: block; max-width: 100%; height: auto; }
        icin animasyonun transform'uyla catismadan onun uzerine biner. */
     .brands li > span { transition: transform .3s cubic-bezier(.2, .7, .3, 1), box-shadow .3s ease; }
     .brands li:hover > span { transform: scale(1.12); }
+    /* Referans hucreleri de ayni sebeple `scale` kullaniyor (bkz. yukarisi):
+       .refs li ayni zamanda .reveal, transform'u beliris animasyonu tutuyor.
+       Marka logolarindan daha kucuk bir oran - hucreler cok daha genis. */
+    .refs li { transition: scale .3s cubic-bezier(.2, .7, .3, 1), box-shadow .3s ease,
+                           background-color .3s ease, color .3s ease; }
+    .refs li:hover { scale: 1.1; }
     .has-arrow::after, .footer-up::after { transition: transform .25s cubic-bezier(.2, .7, .3, 1); }
     .has-arrow:hover::after { transform: translateX(4px); }
     .footer-up:hover::after { transform: translateY(-3px); }

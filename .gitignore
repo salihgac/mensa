@@ -8,6 +8,9 @@ yeni fotolar.zip
 # "tüm ürünler.pdf" stok kartları dökümü: ALIŞ FİYATLARI ve tedarikçi
 # cari kayıtları içeriyor. Depoya girmemeli.
 *.pdf
+# Tek istisna: e-katalog. Tanitim broşürü - fiyat / cari bilgisi yok,
+# siteden indiriliyor, depoda durmasi gerekiyor.
+!katalog/mensa-e-katalog.pdf
 
 # --- çalışma artıkları ---
 .DS_Store
