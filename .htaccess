@@ -1,0 +1,37 @@
+# Mensa Yapı Malzemeleri — sunucu ayarları
+
+# --- 1. Tek adres: https://www.mensayapi.com.tr -----------------------
+# Sitedeki canonical etiketi bu adresi gösteriyor; http'den gelen veya
+# www'suz giren ziyaretçi de buraya yönlenir. Tek kural iki durumu da
+# karşılar: ya güvenli değil, ya da www eksik.
+RewriteEngine On
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^ https://www.mensayapi.com.tr%{REQUEST_URI} [L,R=301]
+
+# --- 2. Dosya türleri -------------------------------------------------
+# Sunucu .webmanifest'i tanımıyor, application/octet-stream gönderiyordu;
+# telefonda "ana ekrana ekle" kısayolunun adı ve ikonu bu yüzden boş kalır.
+AddType application/manifest+json .webmanifest
+AddType image/webp .webp
+
+# --- 3. Önbellek ------------------------------------------------------
+# Görseller uzun, CSS/JS kısa süreli: stil dosyasının adı değişmiyor,
+# bir güncelleme yaptığımızda ziyaretçi ertesi gün en geç görmeli.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html            "access plus 0 seconds"
+  ExpiresByType text/css             "access plus 1 day"
+  ExpiresByType text/javascript      "access plus 1 day"
+  ExpiresByType application/javascript "access plus 1 day"
+  ExpiresByType image/webp           "access plus 30 days"
+  ExpiresByType image/png            "access plus 30 days"
+  ExpiresByType image/x-icon         "access plus 30 days"
+  ExpiresByType application/pdf      "access plus 7 days"
+</IfModule>
+
+# --- 4. Sıkıştırma ----------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript \
+    application/javascript image/svg+xml application/manifest+json
+</IfModule>

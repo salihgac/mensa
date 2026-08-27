@@ -362,7 +362,10 @@ img { display: block; max-width: 100%; height: auto; }
   }
 }
 .hero .wrap { position: relative; z-index: 1; padding-block: var(--s8); }
-.hero-rule { display: block; width: 44px; height: 2px; background: var(--brand-on-dark); margin-bottom: var(--s3); }
+/* Cizgi, "Ürünleri İncele" butonuyla ayni renk (--brand). Not: bu ton
+   koyu fotografin uzerinde 1.52:1 veriyor, yani bilerek soluk duruyor -
+   daha belirgin istenirse --brand-on-dark'a donulur. */
+.hero-rule { display: block; width: 44px; height: 2px; background: var(--brand); margin-bottom: var(--s3); }
 .hero h1 { font-size: var(--t-hero); font-weight: 800; line-height: 0.98; color: #fff; }
 .hero h1 span { display: block; }
 .hero p {
@@ -380,6 +383,11 @@ img { display: block; max-width: 100%; height: auto; }
   border: 1px solid transparent;
 }
 .btn:hover { background: var(--brand-hover); color: #fff; }
+/* Hero'daki dolgu buton fotografin uzerinde duruyor; --brand koyu
+   goruntude kenarlarini kaybediyordu. Yanindaki .btn--outline ile ayni
+   yari saydam beyaz cerceve. Kural hero'ya sinirli: ayni .btn sinifi
+   Urun Gruplari'ndaki acik zeminli katalog butonunda da kullaniliyor. */
+.hero .btn { border-color: rgba(255, 255, 255, 0.45); }
 .btn--ghost {
   background: none; color: #fff;
   border: 1px solid var(--dark-line-2);
@@ -412,6 +420,22 @@ img { display: block; max-width: 100%; height: auto; }
 }
 
 /* rakam şeridi */
+/* --- hero tuğla duvarı ---
+   Video 1600x320; duvar yalnızca ALT 113 pikselde, üstü tuğlalar düşerken
+   geçtiği şeffaf boşluk. Kutu bu yüzden duvar kadar yer kaplıyor, video
+   ise mutlak konumla taşıyor: düşen tuğlalar üstteki metni itmiyor.
+   Yükseklik JS video kaynağını atadıktan sonra açılıyor (.acik) — video
+   hiç yüklenmezse (JS kapalı, hareket azaltma açık) boş bir aralık kalmaz. */
+.hero-tugla {
+  position: relative; max-width: 640px;
+  height: 0; overflow: visible; pointer-events: none;
+}
+.hero-tugla.acik { height: 46px; margin-top: var(--s4); }
+.hero-tugla video {
+  position: absolute; left: 0; bottom: 0;
+  width: 100%; height: auto; display: block;
+}
+
 .stats {
   display: flex; flex-wrap: wrap; gap: clamp(1.5rem, 4vw, 3.5rem);
   margin-top: var(--s7); padding-top: var(--s4);
@@ -502,6 +526,44 @@ img { display: block; max-width: 100%; height: auto; }
   .product:hover { box-shadow: 0 14px 34px rgba(26, 22, 20, .10); z-index: 1; }
 }
 .product > p { font-size: var(--t-sm); line-height: 1.6; color: var(--ink-muted); margin-bottom: var(--s3); }
+
+/* --- kartin tiklanabilir oldugunu anlatan iki isaret ---
+   Ikisi BIRBIRININ YERINE gecer, ayni anda gorunmezler:
+   - fareli cihazda gorselin uzerine gelince fotograf bulaniklasir ve
+     "Ürünleri Gör" yazisi belirir;
+   - dokunmatikte hover diye bir sey olmadigi icin ayni yazi kartin
+     altinda KALICI durur. Sorunun asil yasandigi yer burasiydi. */
+.product-media { position: relative; }
+.product-ustluk {
+  position: absolute; inset: 0;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(26, 22, 20, 0.28);
+  opacity: 0;
+}
+/* Yazi AYRI bir katman: karartma ile birlikte degil, ondan az sonra ve
+   asagidan yukari suzulerek gelsin. Ikisi ayni anda belirdiginde efekt
+   duz bir "yanip sonme" gibi duruyordu. */
+.product-ustluk > span {
+  display: inline-block;
+  padding: 0.5rem 1.125rem;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 100px;
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-sm);
+  letter-spacing: 0.02em; color: #fff;
+  opacity: 0; transform: translateY(12px) scale(0.96);
+}
+.product-git {
+  display: block; margin-top: var(--s3);
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-sm);
+  color: var(--brand);
+}
+@media (hover: hover) {
+  .product-ustluk { display: flex; }
+  .product-git { display: none; }
+  .product:hover .product-ustluk { opacity: 1; }
+  .product:hover .product-ustluk > span { opacity: 1; transform: none; }
+  .product:hover .product-media img { filter: blur(4px); }
+}
 .tags { display: flex; flex-wrap: wrap; gap: 0.4375rem; list-style: none; margin: auto 0 0; padding: 0; }
 .tags li {
   border: 1px solid #D9D0CA; color: var(--ink-body);
@@ -516,11 +578,25 @@ img { display: block; max-width: 100%; height: auto; }
 .urun-ray {
   display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
   scroll-behavior: smooth; scrollbar-width: thin;
+  /* Dikey eksen ACIKCA kapatiliyor. Tek eksene overflow verildiginde
+     digeri kendiliginden `auto` olur; icerik bir an bile birkac piksel
+     uzayinca (beliris animasyonunun 22px'lik kaydirmasi, kartin hover'da
+     kalkmasi) ray kendi icinde asagi yukari kayiyordu. */
+  overflow-y: hidden;
 }
 /* Cubugu yalnizca oklar devredeyken gizle - JS yoksa tek kaydirma yolu odur. */
 .urun-kaydirak[data-js] .urun-ray { scrollbar-width: none; }
 .urun-kaydirak[data-js] .urun-ray::-webkit-scrollbar { display: none; }
 .urun-sayfa { flex: 0 0 100%; min-width: 100%; scroll-snap-align: start; }
+/* Iki satir esit yukseklikte. Aksi halde satir yuksekligini en uzun kart
+   belirliyor ve etiketleri iki satira tasan kartlar yuzunden ust satir
+   alttan 42px daha yuksek kaliyordu: satirlari ayiran cizgi sayfanin
+   ortasina denk gelmiyor, dikey ortalanmis oklar yukarida kalmis gibi
+   gorunuyordu. Tek sutuna dusen dar ekranda UYGULANMAZ - orada butun
+   kartlar en uzunu kadar uzayip bos alan acardi. */
+@media (min-width: 621px) {
+  .urun-sayfa { grid-auto-rows: 1fr; }
+}
 
 .urun-ok {
   position: absolute; top: 50%; transform: translateY(-50%);
@@ -578,6 +654,10 @@ img { display: block; max-width: 100%; height: auto; }
   background: rgba(20, 17, 15, .62);
 }
 .urun-liste:target { display: grid; }
+/* JS ile kapatılan katman. Aynı özgüllükte ama SONRA geldiği için
+   :target kuralını yener — hash düşse de :target yeniden hesaplanmadığı
+   için katman aksi hâlde ekranda kalıyor. */
+.urun-liste.js-kapali { display: none; }
 .urun-liste-ort { position: absolute; inset: 0; }
 .urun-liste-kutu {
   position: relative; z-index: 1;
@@ -592,9 +672,13 @@ img { display: block; max-width: 100%; height: auto; }
 }
 .urun-liste-head h3 { font-size: var(--t-h3); }
 .urun-liste-kapat {
+  /* Ikon artik SVG. Onceden "&times;" karakteriydi: carpi isareti yazi
+     tipinde tam kare bir kutuda durmuyor, place-items: center kutuyu
+     ortalasa da isaret gozle bakildiginda saga/yukari kacik duruyordu.
+     Cizgilerden olusan SVG'de boyle bir sapma yok. */
   flex: none; display: grid; place-items: center;
   width: 44px; height: 44px; margin: -6px -6px 0 0;
-  font-size: 1.75rem; line-height: 1; color: var(--ink-muted);
+  color: var(--ink-muted);
   border-radius: 50%;
 }
 .urun-liste-kapat:hover { background: var(--bg-alt); color: var(--ink); }
@@ -728,6 +812,11 @@ img { display: block; max-width: 100%; height: auto; }
   }
 }
 
+/* Instagram satiri: ikon ve kullanici adi tek satirda hizali dursun.
+   Ikon currentColor kullaniyor, koyu zeminde baglantiyla ayni renkte. */
+.ig { display: inline-flex; align-items: center; gap: 0.5rem; }
+.ig svg { flex: none; }
+
 /* ok işareti: metinde değil ::after'da — kaydırma animasyonu için
    ayrı bir kutu gerekiyor, ayrıca ekran okuyucu okumasın diye */
 .has-arrow::after {
@@ -775,7 +864,9 @@ img { display: block; max-width: 100%; height: auto; }
 }
 .contact-list > div:last-child { padding-bottom: 0; border-bottom: 0; }
 .contact-list dt {
-  flex: none; width: 82px; padding-top: 0.25rem;
+  /* 82px'ti: en uzun etiket "INSTAGRAM" 0.16em harf araligiyla sigmiyor,
+     iki satira boluniyordu ("INSTAGRA / M"). */
+  flex: none; width: 96px; padding-top: 0.25rem;
   font-size: var(--t-xs); letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--on-dark-faint);
 }
@@ -939,8 +1030,18 @@ img { display: block; max-width: 100%; height: auto; }
   @media (hover: hover) {
     .product { transition: transform .35s cubic-bezier(.2, .7, .3, 1), box-shadow .35s ease; }
     .product:hover { transform: translateY(-4px); }
-    .product img { transition: transform .65s cubic-bezier(.2, .7, .3, 1); }
+    .product img { transition: transform .65s cubic-bezier(.2, .7, .3, 1), filter .35s ease; }
     .product:hover img { transform: scale(1.05); }
+    .product-ustluk { transition: opacity .28s ease; }
+    /* 90 ms gecikme: once fotograf bulaniklasip kararir, yazi ardindan
+       gelir. Cikista gecikme yok - imlec ayrilinca ikisi birlikte gider,
+       bekleyen bir yazi kalmaz. */
+    .product-ustluk > span {
+      transition: opacity .28s ease, transform .38s cubic-bezier(.2, .7, .3, 1);
+    }
+    .product:hover .product-ustluk > span {
+      transition-delay: .09s;
+    }
     /* transform DEGIL, bagimsiz `scale` ozelligi kullaniliyor. Sebep:
        .brands li ayni zamanda .reveal ve o animasyon transform'a yaziyor;
        animation-fill-mode: both oldugu icin bittikten sonra da degerini

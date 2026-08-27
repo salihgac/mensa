@@ -22,3 +22,9 @@ Ekran_Resmi*.png
 img/eski/
 img/urun/eski/
 img/marka/eski/
+
+# --- Remotion calisma klasoru ---
+# animasyon/ kaynak kodu depoda dursun, kurulum ve render ciktilari durmasin.
+animasyon/node_modules/
+animasyon/out/
+animasyon/test/

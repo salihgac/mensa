@@ -13,6 +13,11 @@
 <meta property="og:description" content="İnşaat projelerinizde güvenilir iş ortağınız. Kaliteli yapı malzemeleri, zamanında teslimat.">
 <meta property="og:url" content="https://www.mensayapi.com.tr/">
 <meta property="og:image" content="https://www.mensayapi.com.tr/img/hero-hava.webp">
+<meta property="og:image:alt" content="Mensa Yapı Malzemeleri'nin Ataşehir'deki deposu, havadan görünüm">
+<meta property="og:site_name" content="Mensa Yapı Malzemeleri A.Ş.">
+<!-- X/Twitter, og: etiketlerinin cogunu zaten okur; yalnizca kart tipi
+     ayri belirtilmeli, yoksa baglanti kucuk kupurle paylasilir. -->
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
@@ -56,6 +61,9 @@
     "+905524716671"
   ],
   "image": "https://www.mensayapi.com.tr/img/hero-hava.webp",
+  "sameAs": [
+    "https://www.instagram.com/mensayapi/"
+  ],
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Ferhatpaşa, 67. Cadde No:6 İç Kapı No:2",
@@ -63,6 +71,11 @@
     "addressRegion": "İstanbul",
     "postalCode": "34888",
     "addressCountry": "TR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 40.9823211,
+    "longitude": 29.1931128
   },
   "openingHoursSpecification": [
     {
@@ -137,6 +150,15 @@
         <div><dt><span class="count" data-to="350">350</span><small>+</small></dt><dd>Marka</dd></div>
         <div><dt><span class="count" data-to="800">800</span><small>+</small></dt><dd>İş Ortağı</dd></div>
       </dl>
+
+      <!-- Tuğla duvarı: Remotion ile üretilmiş şeffaf zeminli kısa video.
+           Kaynağı JS seçiyor (assets/app.js) — Safari alfa kanalını yalnızca
+           HEVC/.mov'da, diğer tarayıcılar yalnızca VP9/.webm'de destekliyor,
+           <source> sıralamasıyla ayrıştırmak mümkün değil çünkü Safari
+           webm'i de oynatıyor (ama şeffaflık olmadan, siyah kutu olarak). -->
+      <div class="hero-tugla" aria-hidden="true">
+        <video muted playsinline preload="none"></video>
+      </div>
     </div>
   </section>
 
@@ -226,7 +248,7 @@
             <h3><a class="product-link" href="#liste-torbali">Torbalı Malzemeler</a></h3>
             <span class="product-no" aria-hidden="true">01</span>
           </div>
-          <div class="product-media"><img src="img/urun/torbali.webp" width="900" height="563" loading="lazy" decoding="async" alt="Forkliftle kamyona yüklenen çimento çuvalları"></div>
+          <div class="product-media"><img src="img/urun/torbali.webp" width="900" height="563" loading="lazy" decoding="async" alt="Forkliftle kamyona yüklenen çimento çuvalları"><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>Çimento, alçı ve hazır harçlar — projenin temelini oluşturan torbalı ürünler.</p>
           <ul class="tags">
             <li>Çimento</li>
@@ -234,13 +256,14 @@
             <li>Derz Dolgu</li>
             <li>Seramik Yapıştırıcı</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
         <article class="product reveal">
           <div class="product-head">
             <h3><a class="product-link" href="#liste-tugla">Tuğla Grubu</a></h3>
             <span class="product-no" aria-hidden="true">02</span>
           </div>
-          <div class="product-media"><img src="img/urun/tugla.webp" width="900" height="563" loading="lazy" decoding="async" alt="Depoda paletlenmiş tuğla ve izolasyon tuğlası stoğu"></div>
+          <div class="product-media"><img src="img/urun/tugla.webp" width="900" height="563" loading="lazy" decoding="async" alt="Depoda paletlenmiş tuğla ve izolasyon tuğlası stoğu"><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>Delikli, yığma, izo geçmeli ve asmolen tuğlalar ile kiremit ve baca elemanları.</p>
           <ul class="tags">
             <li>Delikli Tuğla</li>
@@ -248,26 +271,28 @@
             <li>Asmolen</li>
             <li>Kiremit ve Mahya</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
         <article class="product reveal">
           <div class="product-head">
             <h3><a class="product-link" href="#liste-gazbeton">Gazbeton Ürünleri</a></h3>
             <span class="product-no" aria-hidden="true">03</span>
           </div>
-          <div class="product-media"><img src="img/urun/gazbeton.webp" width="900" height="563" loading="lazy" decoding="async" alt="Depo girişinde paletlenmiş Ege, Ytong ve Nuh gazbeton stoğu"></div>
+          <div class="product-media"><img src="img/urun/gazbeton.webp" width="900" height="563" loading="lazy" decoding="async" alt="Depo girişinde paletlenmiş Ege, Ytong ve Nuh gazbeton stoğu"><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>Yüksek ısı ve ses yalıtımı sağlayan hafif gazbeton blok, lento ve örgü harçları.</p>
           <ul class="tags">
             <li>Gazbeton Blok</li>
             <li>Lento</li>
             <li>Örgü Harcı</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
         <article class="product reveal">
           <div class="product-head">
             <h3><a class="product-link" href="#liste-beton">Beton Elemanları</a></h3>
             <span class="product-no" aria-hidden="true">04</span>
           </div>
-          <div class="product-media"><img src="img/urun/beton.webp" width="900" height="563" loading="lazy" decoding="async" alt="İstiflenmiş beton yağmur oluğu ve bordür elemanları"></div>
+          <div class="product-media"><img src="img/urun/beton.webp" width="900" height="563" loading="lazy" decoding="async" alt="İstiflenmiş beton yağmur oluğu ve bordür elemanları"><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>Kilit taşından bordüre, harpuştadan bahçe elemanlarına prefabrik beton ürünler.</p>
           <ul class="tags">
             <li>Kilit Taşı</li>
@@ -275,13 +300,14 @@
             <li>Harpuşta</li>
             <li>Beton Baca</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
         <article class="product reveal">
           <div class="product-head">
             <h3><a class="product-link" href="#liste-altyapi">Altyapı – PVC – Koruge</a></h3>
             <span class="product-no" aria-hidden="true">05</span>
           </div>
-          <div class="product-media"><img src="img/urun/altyapi.webp" width="900" height="563" loading="lazy" decoding="async" alt="Sarı ve siyah koruge boru ile drenaj boruları"></div>
+          <div class="product-media"><img src="img/urun/altyapi.webp" width="900" height="563" loading="lazy" decoding="async" alt="Sarı ve siyah koruge boru ile drenaj boruları"><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>Su, kanalizasyon ve drenaj hatları için koruge, PVC ve PPR boru sistemleri.</p>
           <ul class="tags">
             <li>Koruge Boru</li>
@@ -289,13 +315,14 @@
             <li>PVC Atık Su</li>
             <li>PPR</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
         <article class="product reveal">
           <div class="product-head">
             <h3><a class="product-link" href="#liste-dokme">Dökme Malzemeler</a></h3>
             <span class="product-no" aria-hidden="true">06</span>
           </div>
-          <div class="product-media product-media--bos" aria-hidden="true"><span>06</span></div>
+          <div class="product-media product-media--bos" aria-hidden="true"><span>06</span><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>Ton ve m³ bazında kum, mıcır, taş tozu ve toprak — şantiyeye doğrudan sevkiyat.</p>
           <ul class="tags">
             <li>Kum</li>
@@ -303,6 +330,7 @@
             <li>Taş Tozu</li>
             <li>Toprak</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
           </div>
           <div class="urun-sayfa grid-lines cols-3">
@@ -311,7 +339,7 @@
             <h3><a class="product-link" href="#liste-demir">Demir – Profil Malzemeleri</a></h3>
             <span class="product-no" aria-hidden="true">07</span>
           </div>
-          <div class="product-media product-media--bos" aria-hidden="true"><span>07</span></div>
+          <div class="product-media product-media--bos" aria-hidden="true"><span>07</span><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>İnşaat demiri, çelik hasır ve alçıpan profilleri — taşıyıcıdan detaya.</p>
           <ul class="tags">
             <li>İnşaat Demiri</li>
@@ -319,13 +347,14 @@
             <li>Kutu Profil</li>
             <li>Alçıpan Profilleri</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
         <article class="product reveal">
           <div class="product-head">
             <h3><a class="product-link" href="#liste-kereste">Kereste Grubu</a></h3>
             <span class="product-no" aria-hidden="true">08</span>
           </div>
-          <div class="product-media product-media--bos" aria-hidden="true"><span>08</span></div>
+          <div class="product-media product-media--bos" aria-hidden="true"><span>08</span><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>Kalıp ve kaba yapı işleri için kalas, tahta, kereste ve ahşap levha.</p>
           <ul class="tags">
             <li>Kalas</li>
@@ -333,13 +362,14 @@
             <li>Kereste</li>
             <li>OSB</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
         <article class="product reveal">
           <div class="product-head">
             <h3><a class="product-link" href="#liste-mantolama">Mantolama Malzemeleri</a></h3>
             <span class="product-no" aria-hidden="true">09</span>
           </div>
-          <div class="product-media product-media--bos" aria-hidden="true"><span>09</span></div>
+          <div class="product-media product-media--bos" aria-hidden="true"><span>09</span><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>Dış cephe ısı yalıtım sistemleri — levha, file, dübel ve sistem bileşenleri.</p>
           <ul class="tags">
             <li>EPS ve XPS Strafor</li>
@@ -347,13 +377,14 @@
             <li>Donatı Filesi</li>
             <li>Dübel</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
         <article class="product reveal">
           <div class="product-head">
             <h3><a class="product-link" href="#liste-yalitim">Yalıtım Malzemeleri</a></h3>
             <span class="product-no" aria-hidden="true">10</span>
           </div>
-          <div class="product-media"><img src="img/urun/yalitim.webp" width="900" height="563" loading="lazy" decoding="async" alt="Forkliftle taşınan UKS su yalıtım membranı paleti"></div>
+          <div class="product-media"><img src="img/urun/yalitim.webp" width="900" height="563" loading="lazy" decoding="async" alt="Forkliftle taşınan UKS su yalıtım membranı paleti"><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>Su ve ısı yalıtımı — membran, çimento esaslı sistemler ve çatı ürünleri.</p>
           <ul class="tags">
             <li>Su Yalıtım Membranı</li>
@@ -361,13 +392,14 @@
             <li>Cam Yünü</li>
             <li>Çatı Şiltesi</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
         <article class="product reveal">
           <div class="product-head">
             <h3><a class="product-link" href="#liste-kimyasal">Yapı Kimyasalları</a></h3>
             <span class="product-no" aria-hidden="true">11</span>
           </div>
-          <div class="product-media"><img src="img/urun/kimyasal.webp" width="900" height="563" loading="lazy" decoding="async" alt="Raflarda bidonlanmış yapı kimyasalları ve membran ruloları"></div>
+          <div class="product-media"><img src="img/urun/kimyasal.webp" width="900" height="563" loading="lazy" decoding="async" alt="Raflarda bidonlanmış yapı kimyasalları ve membran ruloları"><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>Yapıştırıcı, tamir harcı, grout ve astarlar — Tekno, Weber, Baumit, Yurtbay.</p>
           <ul class="tags">
             <li>Yapıştırıcı</li>
@@ -375,13 +407,14 @@
             <li>Grout</li>
             <li>Astar</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
         <article class="product reveal">
           <div class="product-head">
             <h3><a class="product-link" href="#liste-nalbur">Nalbur – Hırdavat Grubu</a></h3>
             <span class="product-no" aria-hidden="true">12</span>
           </div>
-          <div class="product-media product-media--bos" aria-hidden="true"><span>12</span></div>
+          <div class="product-media product-media--bos" aria-hidden="true"><span>12</span><span class="product-ustluk" aria-hidden="true"><span>Ürünleri Gör</span></span></div>
           <p>El aletinden iş güvenliğine, çividen boyaya günlük şantiye ihtiyacı.</p>
           <ul class="tags">
             <li>El Aletleri</li>
@@ -389,6 +422,7 @@
             <li>İş Güvenliği</li>
             <li>Boya</li>
           </ul>
+          <span class="product-git has-arrow" aria-hidden="true">Ürünleri Gör</span>
         </article>
           </div>
         </div>
@@ -409,7 +443,7 @@
               <p class="eyebrow">Ürün Grubu 01</p>
               <h3 id="liste-torbali-b">Torbalı Malzemeler</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>32,5 Çimento (Nuh, Oyak, Safi, Marmara, Vezirhan, Eskişehir)</li>
@@ -447,7 +481,7 @@
               <p class="eyebrow">Ürün Grubu 02</p>
               <h3 id="liste-tugla-b">Tuğla Grubu</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>8,5 – 10 – 13,5 – 19&#x27;luk Delikli Tuğla</li>
@@ -482,7 +516,7 @@
               <p class="eyebrow">Ürün Grubu 03</p>
               <h3 id="liste-gazbeton-b">Gazbeton Ürünleri</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>5 – 8,5 – 10 – 13,5 – 15 – 20&#x27;lik Gazbeton Blok</li>
@@ -509,7 +543,7 @@
               <p class="eyebrow">Ürün Grubu 04</p>
               <h3 id="liste-beton-b">Beton Elemanları</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>6 – 8&#x27;lik Kilit Taşı — gri, kırmızı, mineralli</li>
@@ -551,7 +585,7 @@
               <p class="eyebrow">Ürün Grubu 05</p>
               <h3 id="liste-altyapi-b">Altyapı – PVC – Koruge</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>Koruge Boru SN4 — 100 / 150 / 200 / 300 mm</li>
@@ -591,7 +625,7 @@
               <p class="eyebrow">Ürün Grubu 06</p>
               <h3 id="liste-dokme-b">Dökme Malzemeler</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>Yıkanmış Kaba Kum — ton / m³</li>
@@ -620,7 +654,7 @@
               <p class="eyebrow">Ürün Grubu 07</p>
               <h3 id="liste-demir-b">Demir – Profil Malzemeleri</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>8 – 10 – 12 – 14 – 16 mm İnşaat Demiri</li>
@@ -660,7 +694,7 @@
               <p class="eyebrow">Ürün Grubu 08</p>
               <h3 id="liste-kereste-b">Kereste Grubu</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>5×10 – 5×20 – 10×10 Kalas (3 mt)</li>
@@ -689,7 +723,7 @@
               <p class="eyebrow">Ürün Grubu 09</p>
               <h3 id="liste-mantolama-b">Mantolama Malzemeleri</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>EPS Strafor 3 – 4 – 5&#x27;lik</li>
@@ -728,7 +762,7 @@
               <p class="eyebrow">Ürün Grubu 10</p>
               <h3 id="liste-yalitim-b">Yalıtım Malzemeleri</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>3 mm ve 4 mm Bitümlü Membran — kumlu, siyah</li>
@@ -766,7 +800,7 @@
               <p class="eyebrow">Ürün Grubu 11</p>
               <h3 id="liste-kimyasal-b">Yapı Kimyasalları</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>Seramik ve Fayans Yapıştırıcı — Baumit</li>
@@ -804,7 +838,7 @@
               <p class="eyebrow">Ürün Grubu 12</p>
               <h3 id="liste-nalbur-b">Nalbur – Hırdavat Grubu</h3>
             </div>
-            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat">&times;</a>
+            <a class="urun-liste-kapat" href="#urunler" aria-label="Listeyi kapat"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></a>
           </div>
           <ul class="urun-liste-items">
           <li>Mala ve Süngerli Mala</li>
@@ -996,6 +1030,13 @@
               <dt>Web</dt>
               <dd><a href="https://www.mensayapi.com.tr">www.mensayapi.com.tr</a></dd>
             </div>
+            <div>
+              <dt>Instagram</dt>
+              <dd><a class="ig" href="https://www.instagram.com/mensayapi/" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>
+                <span>@mensayapi</span>
+              </a></dd>
+            </div>
           </dl>
         </div>
 
@@ -1004,7 +1045,7 @@
           <div class="map">
             <iframe title="Mensa Yapı Malzemeleri konumu — Google Haritalar" src="https://maps.google.com/maps?q=Mensa%20Yap%C4%B1%20Malzemeleri%2C%20Ferhatpa%C5%9Fa%2C%2067.%20Cadde%20No%3A6%20%C4%B0%C3%A7%20Kap%C4%B1%20No%3A2%2C%2034888%20Ata%C5%9Fehir/%C4%B0stanbul%2C%20T%C3%BCrkiye&amp;hl=tr&amp;z=17&amp;output=embed" loading="lazy"></iframe>
           </div>
-          <a class="btn btn--ghost has-arrow" href="https://www.google.com/maps/dir/?api=1&amp;destination=Mensa%20Yap%C4%B1%20Malzemeleri%2C%20Ferhatpa%C5%9Fa%2C%2067.%20Cadde%20No%3A6%20%C4%B0%C3%A7%20Kap%C4%B1%20No%3A2%2C%2034888%20Ata%C5%9Fehir/%C4%B0stanbul%2C%20T%C3%BCrkiye" target="_blank" rel="noopener">Yol tarifi al</a>
+          <a class="btn btn--ghost has-arrow" href="https://www.google.com/maps/dir/?api=1&amp;destination=40.9823211%2C29.1931128" target="_blank" rel="noopener">Yol tarifi al</a>
         </div>
       </div>
 
@@ -1061,9 +1102,10 @@
               <li><a href="tel:+905054716671">0505 471 66 71</a></li>
               <li><a href="tel:+905524716671">0552 471 66 71</a></li>
               <li><a href="mailto:info@mensayapi.com.tr">info@mensayapi.com.tr</a></li>
+              <li><a href="https://www.instagram.com/mensayapi/" target="_blank" rel="noopener">Instagram — @mensayapi</a></li>
             </ul>
             <address>Ferhatpaşa, 67. Cadde No:6 İç Kapı No:2<br>34888 Ataşehir / İstanbul</address>
-            <a class="footer-dir has-arrow" href="https://www.google.com/maps/dir/?api=1&amp;destination=Mensa%20Yap%C4%B1%20Malzemeleri%2C%20Ferhatpa%C5%9Fa%2C%2067.%20Cadde%20No%3A6%20%C4%B0%C3%A7%20Kap%C4%B1%20No%3A2%2C%2034888%20Ata%C5%9Fehir/%C4%B0stanbul%2C%20T%C3%BCrkiye" target="_blank" rel="noopener"><span>Yol tarifi al</span></a>
+            <a class="footer-dir has-arrow" href="https://www.google.com/maps/dir/?api=1&amp;destination=40.9823211%2C29.1931128" target="_blank" rel="noopener"><span>Yol tarifi al</span></a>
           </div>
         </div>
 

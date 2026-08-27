@@ -12,6 +12,43 @@
   var toggle = document.querySelector(".nav-toggle");
   var links = nav ? Array.prototype.slice.call(nav.querySelectorAll("a[href^='#']")) : [];
 
+  /* ---- e-katalog sekmesi ------------------------------------------ */
+  /* Baglanti target="_blank" ile de calisir; burada window.open ile
+     aciliyor cunku bir sekme kendini yalnizca BETIKLE acildiysa
+     kapatabilir. Katalog sayfasindaki "Siteye don", opener'i one alip
+     kendi sekmesini kapatiyor - kullanici tikladigi sekmeye geri doner.
+     Ayrica pencereye ad veriliyor: butona ikinci kez basildiginda yeni
+     sekme acilmaz, acik olan one gelir. */
+  var katalogBtn = document.querySelector(".katalog-cta a[href$='katalog.html']");
+  if (katalogBtn) {
+    katalogBtn.addEventListener("click", function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      var w = window.open(katalogBtn.href, "mensa-katalog");
+      if (!w) return;             // acilir pencere engellendi: normal akis
+      e.preventDefault();
+      w.focus();
+    });
+  }
+
+  /* ---- hero tuğla duvarı ------------------------------------------- */
+  /* Kaynak burada seçiliyor, HTML'de <source> ile DEĞİL: şeffaf video için
+     Safari yalnızca HEVC/.mov'u, Chrome ve Firefox yalnızca VP9/.webm'i
+     destekliyor. Safari webm'i de oynatabildiği için <source> sıralaması
+     ayrıştırmaz - yanlış dosyayı seçip tuğlaların arkasını siyah gösterir. */
+  var tuglaKutu = document.querySelector(".hero-tugla");
+  var tuglaVideo = tuglaKutu && tuglaKutu.querySelector("video");
+  if (tuglaVideo && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    var safari = /^((?!chrome|crios|fxios|android).)*safari/i.test(navigator.userAgent);
+    tuglaVideo.src = safari ? "video/tugla-safari.mov" : "video/tugla.webm";
+    // Yer ancak kaynak atandıktan sonra açılıyor; yüklenemezse boşluk kalmasın.
+    tuglaVideo.addEventListener("loadeddata", function () {
+      tuglaKutu.classList.add("acik");
+      var s = tuglaVideo.play();
+      if (s && s.catch) s.catch(function () { /* otomatik oynatma engellendi */ });
+    });
+    tuglaVideo.load();
+  }
+
   /* ---- mobil menü ------------------------------------------------- */
   var mq = window.matchMedia("(max-width: 900px)");
 
@@ -215,7 +252,12 @@
     }
 
     function kapat() {
-      if (!acik()) return;
+      var el = acik();
+      if (!el) return;
+      /* Yalnızca hash'i düşürmek YETMİYOR: tarayıcı :target'i replaceState
+         sonrası yeniden hesaplamıyor, katman ekranda kalıyordu (ölçüldü).
+         Sınıf katmanı kesin kapatır; bir sonraki açılışta kaldırılır. */
+      el.classList.add("js-kapali");
       // pathname+search ile hash'i düşür: geri tuşuna yeni kayıt eklemez
       history.replaceState(null, "", location.pathname + location.search);
       durumTazele();
@@ -234,9 +276,28 @@
       }
     }
 
-    addEventListener("hashchange", durumTazele);
+    addEventListener("hashchange", function () {
+      // yeni katman açılıyor: önceki kapatmanın izini temizle
+      for (var i = 0; i < katmanlar.length; i++) {
+        katmanlar[i].classList.remove("js-kapali");
+      }
+      durumTazele();
+    });
     addEventListener("keydown", function (e) {
       if (e.key === "Escape") kapat();
+    });
+
+    /* Kapatma bağlantıları (çarpı ve arka plan) HTML'de "#urunler"e gider;
+       JS yoksa katman böyle kapanır, ama tarayıcı o çapaya ATLAR — kullanıcı
+       listeyi kapatınca kendini bölümün en üstünde bulurdu. Burada gezinme
+       iptal edilip hash sessizce düşürülüyor: katman kapanır, sayfa
+       kullanıcının bıraktığı yerde kalır. */
+    document.addEventListener("click", function (e) {
+      var kapa = e.target.closest(".urun-liste-kapat, .urun-liste-ort");
+      if (!kapa) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      kapat();
     });
     durumTazele();
   }

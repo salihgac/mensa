@@ -56,16 +56,41 @@
 <body>
 
 <div class="bar">
-  <a class="geri" href="index.html" aria-label="Siteye dön"><img src="img/logo.png" width="419" height="109" alt="Mensa"></a>
+  <a class="geri" href="index.html" data-geri aria-label="Siteye dön"><img src="img/logo.png" width="419" height="109" alt="Mensa"></a>
   <h1>E-Katalog</h1>
   <span class="sep"></span>
-  <a class="geri" href="index.html">← Siteye dön</a>
+  <a class="geri" href="index.html" data-geri>← Siteye dön</a>
   <a class="indir" href="katalog/mensa-e-katalog.pdf" download="Mensa-E-Katalog.pdf">PDF indir</a>
 </div>
 
 <div class="goruntule">
   <iframe src="katalog/mensa-e-katalog.pdf" title="Mensa Yapı Malzemeleri e-katalog"></iframe>
 </div>
+
+<script>
+/* "Siteye don": bu sekmeyi kapatip kullanicinin katalog butonuna bastigi
+   sekmeyi one alir. Sekme yalnizca kendisini BETIKLE acan bir sayfa varsa
+   kapanabilir - site tarafinda baglanti bu yuzden window.open ile aciliyor
+   (assets/app.js). Opener yoksa (dogrudan URL, yer imi, JS kapali) hicbir
+   sey baglanmaz ve baglanti normal sekilde index.html'e gider. */
+(function () {
+  "use strict";
+  var opener = window.opener;
+  if (!opener || opener.closed) return;
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-geri]"), function (a) {
+    a.addEventListener("click", function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      try { opener.focus(); } catch (hata) { /* farkli kaynak: yok say */ }
+      window.close();
+      /* Tarayici kapatmayi reddederse sayfa kilitli kalmasin: kisa bir
+         gecikmeden sonra normal gezinme yapilir. */
+      setTimeout(function () { location.href = a.href; }, 250);
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
