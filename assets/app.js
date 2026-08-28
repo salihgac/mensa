@@ -37,16 +37,45 @@
      ayrıştırmaz - yanlış dosyayı seçip tuğlaların arkasını siyah gösterir. */
   var tuglaKutu = document.querySelector(".hero-tugla");
   var tuglaVideo = tuglaKutu && tuglaKutu.querySelector("video");
+  var tuglaYedek = tuglaKutu && tuglaKutu.querySelector(".hero-tugla-yedek");
+
+  /* Duvarı göster: video oynayamazsa son karesi görsel olarak açılır.
+     Böylece duvar HER durumda görünür - iOS'ta düşük güç modu otomatik
+     oynatmayı kapatıyor, bazı tarayıcılar da şeffaf videoyu çözemiyor. */
+  function tuglaYedegeGec() {
+    if (!tuglaKutu || !tuglaYedek || !tuglaYedek.hidden) return;
+    if (tuglaVideo) tuglaVideo.remove();
+    tuglaYedek.hidden = false;
+    tuglaKutu.classList.add("acik");
+  }
+
   if (tuglaVideo && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    var safari = /^((?!chrome|crios|fxios|android).)*safari/i.test(navigator.userAgent);
-    tuglaVideo.src = safari ? "video/tugla-safari.mov" : "video/tugla.webm";
-    // Yer ancak kaynak atandıktan sonra açılıyor; yüklenemezse boşluk kalmasın.
+    /* Şeffaf videoyu Safari yalnızca HEVC/.mov'da, Chrome ve Firefox
+       yalnızca VP9/.webm'de destekliyor. iPhone/iPad'de TÜM tarayıcılar
+       (Chrome dahil) WebKit kullandığı için ayrım "Safari mi" değil
+       "iOS mu" sorusuyla yapılıyor - eskiden iOS Chrome yanlış dosyayı
+       alıp boş kutu gösteriyordu. */
+    var wk = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+             (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ||
+             /^((?!chrome|crios|fxios|android).)*safari/i.test(navigator.userAgent);
+    tuglaVideo.src = wk ? "video/tugla-safari.mov" : "video/tugla.webm";
+
     tuglaVideo.addEventListener("loadeddata", function () {
       tuglaKutu.classList.add("acik");
       var s = tuglaVideo.play();
-      if (s && s.catch) s.catch(function () { /* otomatik oynatma engellendi */ });
+      if (s && s.catch) s.catch(tuglaYedegeGec);   // otomatik oynatma engellendi
     });
+    tuglaVideo.addEventListener("error", tuglaYedegeGec);
+    // Hiç başlamazsa (sessizce takılan durumlar) 2 saniye sonra yedeğe geç.
+    setTimeout(function () {
+      if (tuglaVideo && (tuglaVideo.readyState < 2 || tuglaVideo.currentTime === 0)) {
+        tuglaYedegeGec();
+      }
+    }, 2000);
     tuglaVideo.load();
+  } else if (tuglaVideo) {
+    // Hareket azaltma açık: animasyon yok ama duvar dursun.
+    tuglaYedegeGec();
   }
 
   /* ---- kayan şeritler (genel görünüm + markalar) --------------------- */
