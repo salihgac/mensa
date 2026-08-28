@@ -59,8 +59,8 @@
     var suruklu = false, baslangicX = 0, baslangicKaydirma = 0;
     var yariGenislik = function () { return ray.scrollWidth / 2; };
 
-    // Soldan sağa akış: scrollLeft AZALIR. Ortadan başlanıyor ki ilk
-    // karede solda boşluk kalmasın.
+    // Sağdan sola akış: scrollLeft ARTAR (içerik sola yürür). Ortadan
+    // başlanıyor ki iki yönde de kenarda boşluk kalmasın.
     var konum = yariGenislik();
     kutu.scrollLeft = konum;
     /* Parmak değdiğinde otomatik akış susar. Zaman damgası tutuluyor:
@@ -88,7 +88,7 @@
       } else {
         // Tekerlek/parmakla elle kaydırıldıysa sapmayı yakala.
         if (Math.abs(kutu.scrollLeft - konum) > 2) konum = kutu.scrollLeft;
-        konum -= hiz;
+        konum += hiz;
         sarmala();
         kutu.scrollLeft = konum;
       }
@@ -140,12 +140,12 @@
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
     var galeri = document.querySelector(".serit");
     if (galeri && galeri.querySelector(".serit-ray")) {
-      kayanSerit(galeri, galeri.querySelector(".serit-ray"), 0.55);
+      kayanSerit(galeri, galeri.querySelector(".serit-ray"), 1.1);
     }
     var refKutu = document.querySelector(".ref-serit");
     if (refKutu && refKutu.querySelector(".ref-ray")) {
       // İş ortakları şeridi de yalnızca telefonda akıyor.
-      kayanSerit(refKutu, refKutu.querySelector(".ref-ray"), 0.45,
+      kayanSerit(refKutu, refKutu.querySelector(".ref-ray"), 0.95,
                  matchMedia("(max-width: 620px)"));
     }
     var markaKutu = document.querySelector(".marka-serit");
@@ -153,7 +153,7 @@
       /* Marka şeridi YALNIZCA telefonda akıyor; masaüstünde aynı hücreler
          CSS ile altı sütunlu ızgaraya diziliyor, kaydırma yok.
          Logolar fotoğraflardan küçük, aynı hızda daha telaşlı görünüyor. */
-      kayanSerit(markaKutu, markaKutu.querySelector(".marka-ray"), 0.4,
+      kayanSerit(markaKutu, markaKutu.querySelector(".marka-ray"), 0.85,
                  matchMedia("(max-width: 620px)"));
     }
   }
