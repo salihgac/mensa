@@ -1126,6 +1126,12 @@ img { display: block; max-width: 100%; height: auto; }
   font-family: var(--font-display); font-weight: 700;
   font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
 }
+/* Instagram satırı: ikon + hesap adı. Kural iletişim listesinde de
+   footer'da da geçerli. flex: none - ikon dar alanda ezilmesin;
+   align-items: center - yazının optik ortası ikonun ortasına gelsin. */
+.ig { display: inline-flex; align-items: center; gap: 0.5rem; }
+.ig svg { flex: none; }
+
 .contact-list address { font-style: normal; color: var(--on-dark); line-height: 1.5; }
 
 .map {
