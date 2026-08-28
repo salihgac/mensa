@@ -1398,14 +1398,7 @@ img { display: block; max-width: 100%; height: auto; }
   .logo-link img { animation-name: logo-shrink; }
   @keyframes head-shrink { to { padding-block: 0.4375rem; } }
   @keyframes logo-shrink { to { height: 33px; } }
-
-  /* Safari yedeği (bkz. app.js): kaydırmaya bağlı animasyon desteği
-     yoksa <html>'e .js-kaydirma gelir, küçülme sınıfla yapılır. */
-  .js-kaydirma .header-inner { transition: padding-block .25s ease; }
-  .js-kaydirma .logo-link img { transition: height .25s ease; }
 }
-.js-kaydirma .site-header.is-kucuk .header-inner { padding-block: 0.4375rem; }
-.js-kaydirma .site-header.is-kucuk .logo-link img { height: 33px; }
 
 /* ==================================================================== *
    6. MOBİL DÜZEN

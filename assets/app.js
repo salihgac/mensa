@@ -222,28 +222,6 @@
     }).observe(sentinel);
   }
 
-  /* ---- başlık küçülmesi yedeği ------------------------------------- */
-  /* Küçülme CSS'te `animation-timeline: scroll()` ile yapılıyor; Safari
-     kaydırmaya bağlı animasyonları desteklemediği için orada hiç
-     görünmüyordu. Desteklemeyen tarayıcıda aynı iş sınıfla yapılıyor:
-     <html>'e .js-kaydirma eklenir, başlık 120 pikselden sonra .is-kucuk
-     alır. Destek varsa hiçbir şey eklenmez, CSS kendi işini görür. */
-  var kaydirmaZamani = CSS.supports && CSS.supports("animation-timeline", "scroll()");
-  if (header && !kaydirmaZamani) {
-    document.documentElement.classList.add("js-kaydirma");
-    var beklemede = false;
-    var kucult = function () {
-      header.classList.toggle("is-kucuk", window.scrollY > 120);
-      beklemede = false;
-    };
-    addEventListener("scroll", function () {
-      if (beklemede) return;
-      beklemede = true;
-      requestAnimationFrame(kucult);
-    }, { passive: true });
-    kucult();
-  }
-
   /* ---- gezinmede aktif bölüm --------------------------------------- */
   var sections = links
     .map(function (a) { return document.querySelector(a.getAttribute("href")); })
