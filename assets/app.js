@@ -63,6 +63,10 @@
     // karede solda boşluk kalmasın.
     var konum = yariGenislik();
     kutu.scrollLeft = konum;
+    /* Parmak değdiğinde otomatik akış susar. Zaman damgası tutuluyor:
+       iOS'ta ivmeli kaydırma parmak kalktıktan SONRA da sürüyor, o
+       sırada scrollLeft'e yazmak zıplamaya (glitch) yol açıyordu. */
+    var dokunmaKilidi = 0;
 
     /* Konum AYRI bir değişkende ondalıklı tutuluyor. Doğrudan
        `kutu.scrollLeft -= hiz` yazılırsa tarayıcı değeri tam sayıya
@@ -77,7 +81,13 @@
     var adim = function () {
       // mq verilmişse şerit yalnızca o kırılımda akar (markalar: telefon).
       if (mq && !mq.matches) { requestAnimationFrame(adim); return; }
-      if (!suruklu) {
+      if (suruklu || performance.now() < dokunmaKilidi) {
+        // Kullanıcı sürüklüyor ya da ivme sönüyor: konumu ondan al,
+        // scrollLeft'e YAZMA.
+        konum = kutu.scrollLeft;
+      } else {
+        // Tekerlek/parmakla elle kaydırıldıysa sapmayı yakala.
+        if (Math.abs(kutu.scrollLeft - konum) > 2) konum = kutu.scrollLeft;
         konum -= hiz;
         sarmala();
         kutu.scrollLeft = konum;
@@ -86,8 +96,20 @@
     };
     requestAnimationFrame(adim);
 
+    /* Dokunmatikte yatay kaydırmayı TARAYICI yapıyor (CSS'te
+       touch-action: pan-x pan-y). Aşağıdaki fare sürüklemesi yalnızca
+       imleçli cihazlar için; ikisi aynı anda çalışırsa iOS'ta kendi
+       kaydırmasıyla çakışıp titriyor. */
+    var dokunuldu = function (sure) {
+      return function () { dokunmaKilidi = performance.now() + sure; };
+    };
+    kutu.addEventListener("touchstart", dokunuldu(1500), { passive: true });
+    kutu.addEventListener("touchmove", dokunuldu(1500), { passive: true });
+    kutu.addEventListener("touchend", dokunuldu(1100), { passive: true });
+
     kutu.addEventListener("pointerdown", function (e) {
       if (mq && !mq.matches) return;
+      if (e.pointerType !== "mouse") return;   // dokunmatik: tarayıcı kaydırsın
       suruklu = true;
       baslangicX = e.clientX;
       // Parmak/fare tekerleğiyle elle kaydırılmış olabilir: gerçek konumu al

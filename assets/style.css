@@ -716,7 +716,10 @@ img { display: block; max-width: 100%; height: auto; }
   overflow-x: auto; overflow-y: hidden;
   scrollbar-width: none;
   overscroll-behavior-x: contain;
-  cursor: grab; touch-action: pan-y;
+  cursor: grab;
+  /* Yatay kaydırma dokunmatikte tarayıcıya bırakılıyor: kendi
+     ivmeli kaydırmasıyla JS'in konum yazması çakışıp titriyordu. */
+  touch-action: pan-x pan-y;
   -webkit-user-select: none; user-select: none;
   /* Çizgiler hücrelerin kenarlığı: 38 logo sütuna tam bölünmediğinde
      son satırda hücre kalmayan alan kabın zeminini göstermesin. */
@@ -888,7 +891,10 @@ img { display: block; max-width: 100%; height: auto; }
   overflow-x: auto; overflow-y: hidden;
   scrollbar-width: none;
   overscroll-behavior-x: contain;
-  cursor: grab; touch-action: pan-y;
+  cursor: grab;
+  /* Yatay kaydırma dokunmatikte tarayıcıya bırakılıyor: kendi
+     ivmeli kaydırmasıyla JS'in konum yazması çakışıp titriyordu. */
+  touch-action: pan-x pan-y;
   -webkit-user-select: none; user-select: none;
   border-top: 1px solid var(--line);
   border-left: 1px solid var(--line);
@@ -1023,9 +1029,9 @@ img { display: block; max-width: 100%; height: auto; }
   scrollbar-width: none;
   overscroll-behavior-x: contain;
   cursor: grab;
-  /* Sürüklerken tarayıcının kendi "resmi sürükle" davranışı devreye
-     girmesin; parmakla dikey kaydırma serbest kalsın. */
-  touch-action: pan-y;
+  /* Yatay kaydırma dokunmatikte tarayıcıya bırakılıyor: kendi
+     ivmeli kaydırmasıyla JS'in konum yazması çakışıp titriyordu. */
+  touch-action: pan-x pan-y;
   -webkit-user-select: none; user-select: none;
   /* Kenarlarda solma: sonsuz şeritte soldaki ve sağdaki hücre her zaman
      ortadan kesiliyor; yarım kalan logo/yazı bozukmuş gibi duruyordu.
