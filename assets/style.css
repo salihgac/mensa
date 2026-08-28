@@ -310,6 +310,9 @@ img { display: block; max-width: 100%; height: auto; }
   .nav-toggle { display: inline-flex; }
   .header-tel span { display: none; }
   .header-tel { padding: 0.625rem; width: 44px; justify-content: center; }
+  /* Geniş ekranda --s5 (40px) logoyu menüden ayırıyor; telefonda menü
+     gizlenince o boşluk iki ikonun arasında kalıyordu. */
+  .header-inner { gap: 0.625rem; }
   .nav {
     position: absolute; left: 0; right: 0; top: 100%;
     flex-direction: column; gap: 0;
@@ -413,10 +416,12 @@ img { display: block; max-width: 100%; height: auto; }
   display: flex; flex-wrap: wrap; gap: 0.875rem;
   margin-top: var(--s5);
 }
-/* Dar ekranda yan yana sığmıyorlar (341px gerekiyor, 335px var).
-   Kırpışarak farklı genişlikte alt alta düşmek yerine tam genişlik. */
+/* Dar ekranda 2rem'lik yan boşlukla yan yana sığmıyorlardı (341px
+   gerekiyor, 335px var) ve alt alta tam genişliğe düşüyorlardı - iki
+   dev blok hero'nun yarısını yiyordu. Boşluk 1.125rem'e inince ikisi
+   de sığıyor, butonlar içeriği kadar yer kaplıyor. */
 @media (max-width: 460px) {
-  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn { padding-inline: 1.125rem; font-size: 0.875rem; }
 }
 
 /* rakam şeridi */
@@ -702,50 +707,144 @@ img { display: block; max-width: 100%; height: auto; }
   font-size: var(--t-xs); color: var(--ink-muted);
 }
 
-/* --- 4.5 marka ızgarası -------------------------------------------- */
-.brands > li { list-style: none; }
-.brands {
-  margin: 0; padding: 0;
-  /* .grid-lines'in tekniginden BILEREK ayriliyor. Orada cizgiler kabin
-     zemininden 1px'lik bosluklardan sizar; marka sayisi sutuna tam
-     bolunmeyince son satirda hucre kalmayan alan da o rengi gosteriyordu.
-     Burada cizgiler hucrelerin kenarligi: hucre yoksa cizgi de yok, izgara
-     son logodan sonra kendiliginden biter. */
-  gap: 0;
-  background: none;
-  border: 0;
+/* --- 4.5 markalar -------------------------------------------------- */
+/* İki görünüm, TEK markup: HTML'de 76 hücre var (38 logo iki kez).
+   Telefonda iki sıralı yatay şerit, ikinci yarı sonsuz döngü için;
+   masaüstünde ikinci yarı gizleniyor ve aynı hücreler altı sütunluk
+   ızgaraya diziliyor. Böylece logolar HTML'de üç kez tekrarlanmıyor. */
+.marka-serit {
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  cursor: grab; touch-action: pan-y;
+  -webkit-user-select: none; user-select: none;
+  /* Çizgiler hücrelerin kenarlığı: 38 logo sütuna tam bölünmediğinde
+     son satırda hücre kalmayan alan kabın zeminini göstermesin. */
   border-top: 1px solid var(--line-soft);
   border-left: 1px solid var(--line-soft);
 }
-.brands li {
+.marka-serit::-webkit-scrollbar { display: none; }
+.marka-serit.tutuluyor { cursor: grabbing; }
+.marka-ray {
+  display: grid; grid-auto-flow: column;
+  grid-template-rows: repeat(2, 1fr);
+  width: max-content; margin: 0; padding: 0; list-style: none;
+}
+.marka-ray li {
+  position: relative;
+  width: clamp(152px, 15vw, 190px); height: clamp(100px, 9vw, 112px);
   border-right: 1px solid var(--line-soft);
   border-bottom: 1px solid var(--line-soft);
 }
-.brands li { position: relative; min-height: 104px; }
-/* Logo, animasyonu OLMAYAN bir <span> icinde duruyor. Sebep: .brands li ayni
-   zamanda .reveal ve o animasyon transform'a yaziyor; animation-fill-mode:
-   both oldugu icin bittikten sonra da degerini tutup kaskadda normal
-   bildirimleri yeniyor. Hucreye stil sayfasindan verilen transform DA scale DA
-   hic uygulanmiyordu (olculdu). Sarmalayicinin animasyonu yok, hover'da
-   serbestce buyuyor. */
-.brands li > span {
+/* Logo, animasyonu OLMAYAN bir <span> içinde duruyor: hücre hover'da
+   büyürken sarmalayıcının kendi --surface zemini altındaki komşuları ve
+   ızgara çizgisini kapatıyor, logo da kırpılmadan büyüyor. */
+.marka-ray li > span {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   padding: var(--s2);
   background: var(--surface);
 }
-.brands img { max-width: 100%; max-height: 64px; object-fit: contain; }
-/* Logolar her zaman renkli. (Onceden fareli cihazlarda grayscale(1) +
-   opacity .72 vardi, renk yalnizca hover'da geliyordu.) */
+.marka-ray img { max-width: 100%; max-height: 62px; object-fit: contain; }
+
+/* --- masaüstü: eski altı sütunlu ızgara --- */
+@media (min-width: 621px) {
+  .marka-serit {
+    overflow: visible; cursor: auto; touch-action: auto;
+    -webkit-user-select: auto; user-select: auto;
+  }
+  .marka-ray {
+    grid-auto-flow: row; grid-template-rows: none;
+    grid-template-columns: repeat(6, 1fr);
+    width: auto;
+  }
+  /* İkinci yarı yalnızca şeridin sonsuz dönmesi için var. */
+  .marka-ray li:nth-child(n + 39) { display: none; }
+  .marka-ray li { width: auto; height: auto; min-height: 104px; }
+  .marka-ray img { max-height: 64px; }
+  /* Masaüstünde zaten hepsi ızgarada duruyor. Bu kural GENİŞLİK
+     sorgusunda: hover sorgusuna konursa dokunmatik dizüstünde ızgara
+     görünüp buton da çıkıyordu. */
+  .marka-tumu-satir { display: none; }
+}
+/* Hücre öne çıkar: üst katmana geçer, gölge alır ve 1px'lik ızgara
+   çizgilerinin üzerine taşar. Eski marka ızgarasındaki davranışın
+   aynısı. */
 @media (hover: hover) {
-  /* Hucre one cikar: ust katmana gecer, golge alir ve 1px'lik izgara
-     cizgilerinin uzerine tasar. Sarmalayicinin zemini var --surface oldugu
-     icin buyurken altindaki komsulari ve cizgiyi kapatir. */
-  .brands li:hover { z-index: 2; }
-  .brands li:hover > span {
+  .marka-ray li:hover { z-index: 2; }
+  .marka-ray li:hover > span {
     box-shadow: 0 14px 34px rgba(26, 22, 20, 0.20);
   }
 }
+
+/* Şerit modunda (telefon) beliriş animasyonu kapalı: `animation-timeline:
+   view()` en yakın kaydırma kabına göre ölçülür, o da yatay şeridin
+   kendisidir - hücreler hep "görünür" sayılıp animasyon takılı kalıyor
+   ve logolar hiç belirmiyordu. Masaüstünde şerit kaydırma kabı değil,
+   orada beliriş sayfa kaydırmasıyla normal çalışır. */
+@media (max-width: 620px) {
+  .marka-ray li.reveal { animation: none; opacity: 1; transform: none; }
+}
+
+/* "Tümünü gör": şeridin altında, sessiz bir bağlantı. Yalnızca telefonda
+   görünür - masaüstünde zaten hepsi ızgarada duruyor. */
+.marka-tumu-satir { margin: var(--s3) 0 0; text-align: right; }
+.marka-tumu-ac {
+  display: inline-flex; align-items: center; gap: 0.4em;
+  min-height: 44px; padding: 0 0.25rem;
+  background: none; border: 0; cursor: pointer;
+  font-family: var(--font-display); font-weight: 600; font-size: var(--t-sm);
+  color: var(--ink-muted);
+}
+.marka-tumu-ac span { transition: transform .25s cubic-bezier(.2,.7,.3,1); }
+.marka-tumu-ac:hover { color: var(--brand); }
+.marka-tumu-ac:hover span { transform: translateX(4px); }
+
+/* --- tüm markalar katmanı --- */
+.marka-tum {
+  width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh;
+  margin: 0; padding: clamp(1rem, 4vw, 2.5rem);
+  border: 0; background: var(--surface); color: var(--ink);
+  overflow-y: auto;
+  /* Açılış animasyonu: katman büyüyerek ve saydamlıktan gelir.
+     Kapanışta aynı yoldan geri gider (JS sınıfı kaldırıyor). */
+  opacity: 0; transform: scale(0.96);
+}
+.marka-tum::backdrop { background: rgba(20, 17, 15, 0.55); opacity: 0; }
+.marka-tum.acik { opacity: 1; transform: none; }
+.marka-tum.acik::backdrop { opacity: 1; }
+.marka-tum-bas {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s3); margin-bottom: var(--s4);
+}
+.marka-tum-bas .eyebrow { margin: 0; }
+.marka-tum-kapat {
+  flex: none; display: grid; place-items: center;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: none; border: 1px solid var(--line); color: var(--ink);
+  cursor: pointer;
+}
+.marka-tum-kapat:hover { background: var(--bg-alt); }
+/* Çizgiler hücrelerin KENARLIĞI, kabın zemininden sızan boşluklar
+   değil: 38 logo sütun sayısına tam bölünmediğinde son satırda hücre
+   kalmayan alan da o zemini gösteriyordu (koyu boş kutu). */
+.marka-tum-liste {
+  display: grid; gap: 0;
+  border-top: 1px solid var(--line-soft);
+  border-left: 1px solid var(--line-soft);
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  margin: 0; padding: 0; list-style: none;
+}
+.marka-tum-liste li {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 104px; padding: var(--s2); background: var(--surface);
+  border-right: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  /* Logolar sırayla belirir; --i her öğede satır içi veriliyor. */
+  opacity: 0; transform: translateY(10px);
+}
+.marka-tum.acik .marka-tum-liste li { opacity: 1; transform: none; }
+.marka-tum-liste img { max-width: 100%; max-height: 56px; object-fit: contain; }
 
 /* --- 4.5b e-katalog cagrisi ---------------------------------------- */
 /* Urun Gruplari basliginin sag kolonunda duruyordu: aciklama cumlesinin
@@ -772,50 +871,123 @@ img { display: block; max-width: 100%; height: auto; }
   .katalog-cta .btn { width: 100%; }
 }
 
-/* --- 4.6 referanslar ----------------------------------------------- */
-.refs { margin: 0; padding: 0; }
-/* HTML'de .grid-lines duruyor ama cizgi teknigi burada .brands'teki gibi
-   degistiriliyor: orada cizgiler kabin zemininden 1px'lik bosluklardan
-   sizar, referans sayisi sutuna tam bolunmeyince son satirda hucre kalmayan
-   alan da o koyu zemini gosteriyordu (bos kutucuk). Burada cizgiler
-   hucrelerin kenarligi - hucre yoksa cizgi de yok, izgara son referanstan
-   sonra kendiliginden biter. */
-.refs {
-  gap: 0;
-  background: none;
-  border: 0;
+/* --- 4.6 iş ortakları ---------------------------------------------- */
+/* Markalarla aynı iki görünüm, tek markup: HTML'de 54 hücre var (27 firma
+   iki kez). Telefonda iki sıralı yatay şerit, ikinci yarı sonsuz döngü
+   için; masaüstünde ikinci yarı gizlenip aynı hücreler dört sütunluk
+   ızgaraya diziliyor.
+   Çizgiler hücrelerin kenarlığı: firma sayısı sütuna tam bölünmediğinde
+   son satırda hücre kalmayan alan kabın zeminini göstermesin. */
+.ref-serit {
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  cursor: grab; touch-action: pan-y;
+  -webkit-user-select: none; user-select: none;
   border-top: 1px solid var(--line);
   border-left: 1px solid var(--line);
 }
-.refs li {
-  list-style: none;
+.ref-serit::-webkit-scrollbar { display: none; }
+.ref-serit.tutuluyor { cursor: grabbing; }
+.ref-ray {
+  display: grid; grid-auto-flow: column;
+  grid-template-rows: repeat(2, 1fr);
+  width: max-content; margin: 0; padding: 0; list-style: none;
+}
+.ref-ray li {
+  position: relative;
+  width: 244px; height: 104px;
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  /* one cikma icin: hucre hover'da buyuyup komsularin ve 1px'lik izgara
-     cizgilerinin uzerine tasiyor, bunun icin kendi yigin baglami gerekiyor. */
-  position: relative;
+}
+/* Metin, animasyonu OLMAYAN bir <span> içinde: hücre hover'da büyürken
+   sarmalayıcının kendi zemini komşuları ve ızgara çizgisini kapatıyor. */
+.ref-ray li > span {
+  position: absolute; inset: 0;
   display: flex; align-items: center;
-  min-height: 88px; padding: var(--s3) var(--s2) var(--s3) var(--s3);
-  /* Govde fontu (Barlow) yerine baslik fontu (Archivo): Barlow yari-daralt-
-     ilmis bir grotesk, 14px'te bu uzun ticari unvanlar ("... San. ve Tic.
-     Ltd. Sti.") sikisik okunuyordu. Archivo daha genis ve acik apertürlü,
-     Turkce aksanlarini (g / s / i / I) 15px'te net ayiriyor. Yeni bir aile
-     indirilmiyor - Archivo zaten yukleniyordu, sadece 500 agirligi eklendi. */
+  padding: var(--s3) var(--s2) var(--s3) var(--s3);
+  background: var(--surface);
+  /* Gövde fontu (Barlow) yerine başlık fontu (Archivo): uzun ticari
+     unvanlar 15px'te Archivo ile daha açık okunuyor. */
   font-family: var(--font-display);
   font-size: 0.9375rem; line-height: 1.5; font-weight: 500; color: var(--ink-body);
 }
+/* Şeritte hücre dar; en uzun unvan dört satırı aşarsa kırpılıyor -
+   tamamı "Tümünü gör" katmanında yazıyor. */
+.ref-ray li > span {
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+/* --- masaüstü: dört sütunlu ızgara --- */
+@media (min-width: 621px) {
+  .ref-serit {
+    overflow: visible; cursor: auto; touch-action: auto;
+    -webkit-user-select: auto; user-select: auto;
+  }
+  .ref-ray {
+    grid-auto-flow: row; grid-template-rows: none;
+    grid-template-columns: repeat(4, 1fr);
+    width: auto;
+  }
+  .ref-ray li:nth-child(n + 28) { display: none; }
+  /* Hücre flex kabı, sarmalayıcı da onu dolduruyor: aksi hâlde metin
+     hücrenin üstüne yapışıyor, satırdaki en uzun unvan hücreyi
+     uzattığında altta boşluk kalıyordu. */
+  .ref-ray li { width: auto; height: auto; min-height: 88px; display: flex; }
+  .ref-ray li > span { position: static; flex: 1; -webkit-line-clamp: none; display: flex; }
+  .ref-tumu-satir { display: none; }
+}
+@media (max-width: 1000px) and (min-width: 621px) {
+  .ref-ray { grid-template-columns: repeat(2, 1fr); }
+}
 @media (hover: hover) {
-  .refs li:hover {
+  /* Hücre öne çıkar: koyu zemine döner, üst katmana geçip büyür. */
+  .ref-ray li:hover { z-index: 2; }
+  .ref-ray li:hover > span {
     background: var(--dark); color: #fff;
-    z-index: 2;
     box-shadow: 0 18px 40px rgba(26, 22, 20, 0.26);
   }
 }
 
-/* Instagram satiri: ikon ve kullanici adi tek satirda hizali dursun.
-   Ikon currentColor kullaniyor, koyu zeminde baglantiyla ayni renkte. */
-.ig { display: inline-flex; align-items: center; gap: 0.5rem; }
-.ig svg { flex: none; }
+/* Şerit modunda beliriş kapalı: `animation-timeline: view()` en yakın
+   kaydırma kabına göre ölçülür, o da yatay şeridin kendisidir - hücreler
+   hep "görünür" sayılıp animasyon takılı kalıyordu. */
+@media (max-width: 620px) {
+  .ref-ray li.reveal { animation: none; opacity: 1; transform: none; }
+}
+
+.ref-tumu-satir { margin: var(--s3) 0 0; text-align: right; }
+.ref-tumu-ac {
+  display: inline-flex; align-items: center; gap: 0.4em;
+  min-height: 44px; padding: 0 0.25rem;
+  background: none; border: 0; cursor: pointer;
+  font-family: var(--font-display); font-weight: 600; font-size: var(--t-sm);
+  color: var(--ink-muted);
+}
+.ref-tumu-ac span { transition: transform .25s cubic-bezier(.2,.7,.3,1); }
+.ref-tumu-ac:hover { color: var(--brand); }
+.ref-tumu-ac:hover span { transform: translateX(4px); }
+
+/* Tüm iş ortakları katmanı: marka katmanının stillerini paylaşıyor,
+   yalnızca hücre içeriği metin olduğu için hizalama farklı. */
+.ref-tum-liste {
+  display: grid; gap: 0;
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  margin: 0; padding: 0; list-style: none;
+}
+.ref-tum-liste li {
+  display: flex; align-items: center;
+  min-height: 88px; padding: var(--s3);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: 0.9375rem; line-height: 1.5; font-weight: 500; color: var(--ink-body);
+  opacity: 0; transform: translateY(10px);
+}
+.ref-tum.acik .ref-tum-liste li { opacity: 1; transform: none; }
 
 /* ok işareti: metinde değil ::after'da — kaydırma animasyonu için
    ayrı bir kutu gerekiyor, ayrıca ekran okuyucu okumasın diye */
@@ -826,23 +998,63 @@ img { display: block; max-width: 100%; height: auto; }
   content: "\2191"; display: inline-block; margin-left: 0.4em;
 }
 
-/* --- 4.7 galeri ----------------------------------------------------- */
-.gallery {
-  display: grid; grid-template-columns: 2fr 1fr 1fr;
-  grid-auto-rows: 230px; gap: 0.875rem;
+/* --- 4.7 genel görünüm şeridi --------------------------------------- */
+/* 25 fotoğraf soldan sağa akıyor. Izgara yerine şerit: fotoğraf sayısı
+   bir ekrana sığmıyor. Bloklar mozaik: bir büyük, yanında bir uzun ve
+   altında iki küçük - hepsi aynı boyda olunca şerit tekdüze duruyordu.
+   Kaydırma tarayıcının kendi yatay kaydırması, JS her karede biraz
+   ilerletiyor; böylece kullanıcı tutup sürükleyebiliyor (bkz. app.js). */
+.serit {
+  --y: clamp(260px, 34vw, 460px);        /* şerit yüksekliği */
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  cursor: grab;
+  /* Sürüklerken tarayıcının kendi "resmi sürükle" davranışı devreye
+     girmesin; parmakla dikey kaydırma serbest kalsın. */
+  touch-action: pan-y;
+  -webkit-user-select: none; user-select: none;
 }
-/* <figure>'ün tarayıcı varsayılanı 1em 40px'tir; sıfırlanmazsa
-   görseller ızgara hücresinden 80px dar kalır. */
-.gallery figure { margin: 0; }
-.gallery img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius); }
-.gallery > :first-child { grid-row: span 2; }
-@media (max-width: 1000px) {
-  .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 200px; }
-  .gallery > :first-child { grid-row: span 2; }
+.serit::-webkit-scrollbar { display: none; }
+.serit.tutuluyor { cursor: grabbing; }
+.serit-ray { display: flex; gap: 0.875rem; width: max-content; padding: 0 0.4375rem; }
+
+.serit-blok {
+  display: grid; gap: 0.875rem;
+  height: var(--y); margin: 0; padding: 0; list-style: none;
+  /* Sütun genişlikleri yüksekliğe bağlı: şerit ekranla birlikte
+     büyürken blokların oranı bozulmasın. */
+  grid-template-columns: calc(var(--y) * 1.05) calc(var(--y) * 0.62) calc(var(--y) * 0.62);
+  grid-template-rows: 1fr 1fr;
 }
+.serit-blok li { margin: 0; overflow: hidden; border-radius: var(--radius); }
+.serit img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* A: büyük solda, uzun sağ üstte, iki küçük sağ altta */
+.serit-blok--a .buyuk { grid-column: 1; grid-row: 1 / 3; }
+.serit-blok--a .uzun  { grid-column: 2 / 4; grid-row: 1; }
+/* B: aynası - büyük sağda */
+.serit-blok--b .uzun  { grid-column: 1 / 3; grid-row: 1; }
+.serit-blok--b .buyuk { grid-column: 3; grid-row: 1 / 3; }
+/* C: dörtlü desene sığmayan 25. fotoğraf için üç küçüklü blok */
+.serit-blok--c {
+  grid-template-columns: calc(var(--y) * 1.05) calc(var(--y) * 0.52)
+                         calc(var(--y) * 0.52) calc(var(--y) * 0.52);
+}
+.serit-blok--c .buyuk { grid-column: 1; grid-row: 1 / 3; }
+.serit-blok--c .uzun  { grid-column: 2 / 5; grid-row: 1; }
+
 @media (max-width: 620px) {
-  .gallery { grid-template-columns: 1fr; }
-  .gallery > :first-child { grid-row: auto; }
+  /* Dar ekranda üç sütunluk blok 1000px'e yaklaşıyor, tek blok bile
+     ekrana sığmıyordu; küçükler alt alta değil tek sırada kalsın diye
+     blok sadeleşiyor: büyük + uzun + bir küçük. */
+  .serit { --y: 240px; }
+  .serit-blok { grid-template-columns: calc(var(--y) * 1.05) calc(var(--y) * 0.8); }
+  .serit-blok--c { grid-template-columns: calc(var(--y) * 1.05) calc(var(--y) * 0.8); }
+  .serit-blok .buyuk { grid-column: 1; grid-row: 1 / 3; }
+  .serit-blok .uzun  { grid-column: 2; grid-row: 1; }
+  .serit-blok .kucuk { grid-column: 2; grid-row: 2; }
+  .serit-blok .kucuk ~ .kucuk { display: none; }
 }
 
 /* --- 4.8 iletişim --------------------------------------------------- */
@@ -873,12 +1085,21 @@ img { display: block; max-width: 100%; height: auto; }
 .contact-list dd { margin: 0; }
 /* dokunma hedefi: satır içi bağlantılar da en az 44px yükseklikte */
 .contact-list a {
-  display: inline-flex; align-items: center; min-height: 44px;
+  display: inline-flex; align-items: center;
+  /* 44px'lik dokunma hedefi min-height ile veriliyordu; bu, tek satırlık
+     bağlantıyı 44px'lik kutunun ORTASINA itiyor, soldaki etiket ise
+     yukarıda kalıyordu - e-posta, web ve Instagram satırları bu yüzden
+     kaymış görünüyordu (adres satırı bağlantı olmadığı için hizalıydı).
+     Dolgu + eşit negatif marj: kutu yine 44px, yazı akışta yerinde. */
+  padding-block: 0.625rem; margin-block: -0.625rem;
   color: #fff;
 }
 .contact-list a:hover { color: var(--brand-on-dark); }
 .contact-tel a {
-  display: flex; font-family: var(--font-display); font-weight: 700;
+  /* Telefon satırları büyük punto ve alt alta iki bağlantı: negatif marj
+     burada ikisini üst üste bindirirdi, o yüzden geri alınıyor. */
+  display: flex; margin-block: 0; padding-block: 0.5rem;
+  font-family: var(--font-display); font-weight: 700;
   font-size: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
 }
 .contact-list address { font-style: normal; color: var(--on-dark); line-height: 1.5; }
@@ -1022,7 +1243,6 @@ img { display: block; max-width: 100%; height: auto; }
     transition: background-color .25s ease, border-color .25s ease,
                 color .25s ease, opacity .25s ease, filter .35s ease;
   }
-  .refs li { transition: background-color .3s ease, color .3s ease; }
 
   /* Durum değiştiren hover'lar yalnızca fareli cihazlarda.
      Dokunmatikte :hover, dokunulan öğede "yapışır" ve kullanıcı
@@ -1042,23 +1262,30 @@ img { display: block; max-width: 100%; height: auto; }
     .product:hover .product-ustluk > span {
       transition-delay: .09s;
     }
-    /* transform DEGIL, bagimsiz `scale` ozelligi kullaniliyor. Sebep:
-       .brands li ayni zamanda .reveal ve o animasyon transform'a yaziyor;
-       animation-fill-mode: both oldugu icin bittikten sonra da degerini
-       tutar ve kaskadda normal bildirimleri yener - hover'daki
-       transform: scale() hic calismazdi. `scale` ayri bir ozellik oldugu
-       icin animasyonun transform'uyla catismadan onun uzerine biner. */
-    .brands li > span { transition: transform .3s cubic-bezier(.2, .7, .3, 1), box-shadow .3s ease; }
-    .brands li:hover > span { transform: scale(1.12); }
-    /* Referans hucreleri de ayni sebeple `scale` kullaniyor (bkz. yukarisi):
-       .refs li ayni zamanda .reveal, transform'u beliris animasyonu tutuyor.
-       Marka logolarindan daha kucuk bir oran - hucreler cok daha genis. */
-    .refs li { transition: scale .3s cubic-bezier(.2, .7, .3, 1), box-shadow .3s ease,
-                           background-color .3s ease, color .3s ease; }
-    .refs li:hover { scale: 1.1; }
+    /* Marka hücresi: sarmalayıcının animasyonu yok, hover'da serbestçe
+       büyüyor. Eski ızgaradaki oran ve eğri korunuyor. */
+    .marka-ray li > span { transition: transform .3s cubic-bezier(.2, .7, .3, 1), box-shadow .3s ease; }
+    .marka-ray li:hover > span { transform: scale(1.12); }
+    /* Referans hücresi: marka hücresiyle aynı - sarmalayıcının animasyonu
+       yok, hover'da serbestçe büyüyor. Metin kutusu geniş olduğu için
+       oran markalardakinden küçük. */
+    .ref-ray li > span { transition: transform .3s cubic-bezier(.2, .7, .3, 1),
+                                     box-shadow .3s ease,
+                                     background-color .3s ease, color .3s ease; }
+    .ref-ray li:hover > span { transform: scale(1.06); }
     .has-arrow::after, .footer-up::after { transition: transform .25s cubic-bezier(.2, .7, .3, 1); }
     .has-arrow:hover::after { transform: translateX(4px); }
     .footer-up:hover::after { transform: translateY(-3px); }
+  }
+
+  /* --- tüm markalar katmanı: açılış ---------------------------------- */
+  /* Katman ve perde birlikte, logolar sırayla. --i satır içinde her
+     öğede yazılı; 38 logo × 12 ms = yarım saniyeden kısa bir dalga. */
+  .marka-tum { transition: opacity .24s ease, transform .26s cubic-bezier(.2, .7, .3, 1); }
+  .marka-tum::backdrop { transition: opacity .24s ease; }
+  .marka-tum-liste li, .ref-tum-liste li {
+    transition: opacity .32s ease, transform .32s cubic-bezier(.2, .7, .3, 1);
+    transition-delay: calc(0.06s + var(--i, 0) * 0.012s);
   }
 
   /* --- 5.2 kaydırınca beliriş --------------------------------------- */
@@ -1078,11 +1305,11 @@ img { display: block; max-width: 100%; height: auto; }
 
   /* Izgara içi dalga. 3'lük çevrim kullanılıyor çünkü sütun sayısı
      kırılımlara göre 6→3→2 değişiyor; 3'lük çevrim hepsinde düzgün akar. */
-  .brands li:nth-child(3n+2), .refs li:nth-child(3n+2),
+  .marka-ray li:nth-child(3n+2), .ref-ray li:nth-child(3n+2),
   .product:nth-child(3n+2), .values > div:nth-child(2n+2),
-  .gallery figure:nth-child(3n+2), .footer-top > :nth-child(3n+2) { --i: 1; }
-  .brands li:nth-child(3n+3), .refs li:nth-child(3n+3),
-  .product:nth-child(3n+3), .gallery figure:nth-child(3n+3),
+  .footer-top > :nth-child(3n+2) { --i: 1; }
+  .marka-ray li:nth-child(3n+3), .ref-ray li:nth-child(3n+3),
+  .product:nth-child(3n+3),
   .footer-top > :nth-child(3n+3) { --i: 2; }
 
   /* Firefox yedeği: animation-timeline desteklenmiyorsa app.js
@@ -1143,30 +1370,6 @@ img { display: block; max-width: 100%; height: auto; }
     }
   }
 
-  /* --- 5.6 galeri parallax (yalnızca geniş ekran) -------------------- */
-  /* Dar ekranda tek sütun ve 200px hücrelerde derinlik değil titreme
-     gibi okunur; o yüzden 1000px altında hiç devreye girmiyor. */
-  @media (min-width: 1000px) {
-    @supports (animation-timeline: view()) {
-      .gallery figure {
-        position: relative; overflow: hidden; border-radius: var(--radius);
-      }
-      .gallery figure img {
-        position: absolute; top: -10%; left: 0; right: 0;
-        width: 100%; height: 120%;      /* kayacak pay: üstte ve altta %10 */
-        border-radius: 0;               /* kırpma artık figure'da */
-        animation: gallery-parallax linear both;
-        animation-timeline: view();
-        animation-range: cover 0% cover 100%;   /* girerken değil, görünür olduğu sürece */
-      }
-      /* %7 × 1.2 yükseklik = kapsayıcının %8.4'ü; %10 payın içinde kalır */
-      @keyframes gallery-parallax {
-        from { transform: translateY(-7%); }
-        to   { transform: translateY(7%); }
-      }
-    }
-  }
-
   /* --- 5.7 başlık küçülmesi ----------------------------------------- */
   .header-inner, .logo-link img {
     animation: linear both;
@@ -1199,38 +1402,14 @@ img { display: block; max-width: 100%; height: auto; }
   .hero-actions { margin-top: var(--s4); }
   .stats { margin-top: var(--s5); padding-top: var(--s3); gap: var(--s3); }
 
-  /* --- markalar: yatay kaydırılan iki sıralı şerit ---
-     32 logoyu 3 sütuna sıkıştırmak her birini okunmaz hâle getiriyordu.
-     Yatay şeritte logolar tam boyutunda kalır, hepsi erişilebilir olur
-     ve bölüm 1.100px yerine ~180px yer kaplar. */
-  .brands {
-    grid-template-columns: none;
-    grid-template-rows: repeat(2, 88px);
-    grid-auto-flow: column;
-    grid-auto-columns: 42vw;
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    -webkit-overflow-scrolling: touch;
-    /* sağ kenardaki solma "devamı var" işareti */
-    -webkit-mask-image: linear-gradient(90deg, #000 86%, transparent 100%);
-            mask-image: linear-gradient(90deg, #000 86%, transparent 100%);
-  }
-  .brands::-webkit-scrollbar { height: 0; }
-  .brands li { scroll-snap-align: start; min-height: 0; }
-  .brands li > span { padding: 0.75rem; }
-  .brands img { max-height: 52px; }
-
   /* --- slogan paneli: 22rem gorseli tek satirlik yaziya gore olculmustu.
          Gorselle birlikte panel 352px olup icinde 109px'lik yazi kaliyor,
          243px bos kirmizi aciliyordu. --- */
   .motto { min-height: 14rem; padding: var(--s5) var(--s3); }
 
-  /* --- referanslar: iki sütun, ama metin küçültülmeden --- */
-  .cols-4 { grid-template-columns: repeat(2, 1fr); }
-  .refs li {
-    min-height: 0; padding: 0.875rem 0.75rem;
-    font-size: 0.9375rem; line-height: 1.5;
-  }
+  /* --- iş ortakları şeridi: dar ekranda hücre biraz daralıyor --- */
+  .ref-ray li { width: 214px; height: 100px; }
+  .ref-ray li > span { padding: var(--s2); font-size: 0.875rem; }
 
   /* --- ürün karuseli mobilde kapali ---
      Tek sutunda bir sayfa 6 kart yuksekliginde oluyordu; yana kaydirmak
@@ -1240,23 +1419,35 @@ img { display: block; max-width: 100%; height: auto; }
   .urun-ok, .urun-sayac { display: none; }
   .urun-liste-kutu { padding: var(--s3) var(--s3) var(--s2); }
 
-  /* --- ürün kartları: görsel oranı geri verildi ---
-     2:1 basık şerit dokulu ürünlerde okunmuyordu. */
-  .product { padding: 1.5rem; }
-  .product-head { margin-bottom: var(--s2); }
-  .product img { aspect-ratio: 3 / 2; }
-  .product-media { margin-bottom: var(--s3); }
-  .product > p { margin-bottom: var(--s3); }
+  /* --- ürün kartları: telefonda İKİ SÜTUN ve kompakt ---
+     Tek sütunda her kart ekranın 1,2 katıydı; 12 kart üst üste gelince
+     bölüm 6.250 piksele çıkıyor, kullanıcı ürünleri geçmek için yirmi
+     ekran kaydırıyordu. İki sütunda bölüm ~1.900 piksele iniyor ve
+     on iki grubun tamamı üç dört ekranda görülüyor.
+     Açıklama SİLİNMİYOR, iki satıra kırpılıyor: metin HTML'de kalsın
+     (arama motoru okuyor), ekranda yer kaplamasın. */
+  .urun-sayfa { grid-template-columns: 1fr 1fr; }
+  .product { padding: 0.875rem 0.875rem 1rem; }
+  .product-head { margin-bottom: 0.625rem; gap: 0.5rem; }
+  /* İki satırlık pay: yan yana duran iki kartın biri tek satır, diğeri
+     iki satır başlık alınca görselleri farklı hizada başlıyordu. */
+  .product h3 { font-size: 1rem; line-height: 1.25; min-height: 2.5em; }
+  .product-no { font-size: 0.6875rem; }
+  .product img { aspect-ratio: 4 / 3; }
+  .product-media { margin-bottom: 0.75rem; }
+  .product > p {
+    font-size: 0.8125rem; line-height: 1.45; margin-bottom: 0.75rem;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; overflow: hidden;
+  }
+  /* Etiketler gizli: iki sütuna sığmıyor, alt alta dizilip kartı üç
+     katına çıkarıyorlardı. İçerdikleri ürünler zaten kart açılınca
+     çıkan listede tek tek yazıyor. */
+  .product .tags { display: none; }
+  .product-git { margin-top: 0; font-size: 0.8125rem; }
 
   /* --- değerler --- */
   .values > div { padding: 1.125rem 1rem; }
-
-  /* --- galeri: tek sütun 5×200px yerine iki sütun --- */
-  .gallery {
-    grid-template-columns: 1fr 1fr;
-    grid-auto-rows: 132px; gap: 0.5rem;
-  }
-  .gallery > :first-child { grid-row: span 2; }
 
   /* --- footer: 16 link × 44px = 704px idi --- */
   .footer-top { grid-template-columns: 1fr 1fr; gap: var(--s3) var(--s2); }

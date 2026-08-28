@@ -49,6 +49,128 @@
     tuglaVideo.load();
   }
 
+  /* ---- kayan şeritler (genel görünüm + markalar) --------------------- */
+  /* Kaydırma CSS animasyonuyla DEĞİL, tarayıcının kendi yatay kaydırmasıyla
+     yapılıyor: kullanıcının şeridi tutup sürükleyebilmesi isteniyor,
+     transform'la kayan bir rayda sürükleme ile animasyon birbirini ezerdi.
+     Ray iki özdeş yarıdan oluşuyor; kaydırma bir yarıyı geçince başa
+     alınıyor, desen aynı olduğu için sıçrama görünmüyor. */
+  function kayanSerit(kutu, ray, hiz, mq) {
+    var suruklu = false, baslangicX = 0, baslangicKaydirma = 0;
+    var yariGenislik = function () { return ray.scrollWidth / 2; };
+
+    // Soldan sağa akış: scrollLeft AZALIR. Ortadan başlanıyor ki ilk
+    // karede solda boşluk kalmasın.
+    var konum = yariGenislik();
+    kutu.scrollLeft = konum;
+
+    /* Konum AYRI bir değişkende ondalıklı tutuluyor. Doğrudan
+       `kutu.scrollLeft -= hiz` yazılırsa tarayıcı değeri tam sayıya
+       yuvarlar; kare başına 1 pikselden küçük adımlarda (marka şeridi
+       0,4 px) okunan değer hep aynı kalır ve şerit hiç kımıldamaz. */
+    var sarmala = function () {
+      var yari = yariGenislik();
+      if (konum <= 0) konum += yari;
+      else if (konum >= yari * 2) konum -= yari;
+    };
+
+    var adim = function () {
+      // mq verilmişse şerit yalnızca o kırılımda akar (markalar: telefon).
+      if (mq && !mq.matches) { requestAnimationFrame(adim); return; }
+      if (!suruklu) {
+        konum -= hiz;
+        sarmala();
+        kutu.scrollLeft = konum;
+      }
+      requestAnimationFrame(adim);
+    };
+    requestAnimationFrame(adim);
+
+    kutu.addEventListener("pointerdown", function (e) {
+      if (mq && !mq.matches) return;
+      suruklu = true;
+      baslangicX = e.clientX;
+      // Parmak/fare tekerleğiyle elle kaydırılmış olabilir: gerçek konumu al
+      konum = baslangicKaydirma = kutu.scrollLeft;
+      kutu.classList.add("tutuluyor");
+      kutu.setPointerCapture(e.pointerId);
+    });
+    kutu.addEventListener("pointermove", function (e) {
+      if (!suruklu) return;
+      e.preventDefault();
+      konum = baslangicKaydirma - (e.clientX - baslangicX);
+      sarmala();
+      kutu.scrollLeft = konum;
+    });
+    var birak = function (e) {
+      if (!suruklu) return;
+      suruklu = false;
+      kutu.classList.remove("tutuluyor");
+      if (e.pointerId != null && kutu.hasPointerCapture(e.pointerId)) {
+        kutu.releasePointerCapture(e.pointerId);
+      }
+    };
+    kutu.addEventListener("pointerup", birak);
+    kutu.addEventListener("pointercancel", birak);
+    kutu.addEventListener("dragstart", function (e) { e.preventDefault(); });
+  }
+
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    var galeri = document.querySelector(".serit");
+    if (galeri && galeri.querySelector(".serit-ray")) {
+      kayanSerit(galeri, galeri.querySelector(".serit-ray"), 0.55);
+    }
+    var refKutu = document.querySelector(".ref-serit");
+    if (refKutu && refKutu.querySelector(".ref-ray")) {
+      // İş ortakları şeridi de yalnızca telefonda akıyor.
+      kayanSerit(refKutu, refKutu.querySelector(".ref-ray"), 0.45,
+                 matchMedia("(max-width: 620px)"));
+    }
+    var markaKutu = document.querySelector(".marka-serit");
+    if (markaKutu && markaKutu.querySelector(".marka-ray")) {
+      /* Marka şeridi YALNIZCA telefonda akıyor; masaüstünde aynı hücreler
+         CSS ile altı sütunlu ızgaraya diziliyor, kaydırma yok.
+         Logolar fotoğraflardan küçük, aynı hızda daha telaşlı görünüyor. */
+      kayanSerit(markaKutu, markaKutu.querySelector(".marka-ray"), 0.4,
+                 matchMedia("(max-width: 620px)"));
+    }
+  }
+
+  /* ---- tam ekran katmanlar (markalar + iş ortakları) ------------------ */
+  function tamEkranKatman(acButon, katman, kapatButon) {
+    if (!acButon || !katman || typeof katman.showModal !== "function") return;
+
+    acButon.addEventListener("click", function () {
+      katman.showModal();
+      // Sınıf BİR SONRAKİ karede ekleniyor: aynı karede eklenirse tarayıcı
+      // başlangıç durumunu hiç görmez, geçiş oynamaz.
+      requestAnimationFrame(function () { katman.classList.add("acik"); });
+    });
+
+    var kapat = function () {
+      katman.classList.remove("acik");
+      // Kapanış animasyonu bitmeden close() çağrılırsa katman aniden
+      // kaybolur; süre CSS'teki geçişle aynı.
+      setTimeout(function () { katman.close(); }, 260);
+    };
+    if (kapatButon) kapatButon.addEventListener("click", kapat);
+    // Escape'in kendi kapatması animasyonu atlıyor: iptal edip elle kapat.
+    katman.addEventListener("cancel", function (e) { e.preventDefault(); kapat(); });
+    // Katmanın boş alanına tıklayınca da kapansın
+    katman.addEventListener("click", function (e) { if (e.target === katman) kapat(); });
+  }
+
+  tamEkranKatman(
+    document.querySelector(".marka-tumu-ac"),
+    document.querySelector(".marka-tum:not(.ref-tum)"),
+    document.querySelector(".marka-tum:not(.ref-tum) .marka-tum-kapat")
+  );
+  tamEkranKatman(
+    document.querySelector(".ref-tumu-ac"),
+    document.querySelector(".ref-tum"),
+    document.querySelector(".ref-tum .ref-tum-kapat")
+  );
+
   /* ---- mobil menü ------------------------------------------------- */
   var mq = window.matchMedia("(max-width: 900px)");
 
