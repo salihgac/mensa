@@ -465,32 +465,27 @@ img { display: block; max-width: 100%; height: auto; }
 .about p + p { margin-top: var(--s2); }
 .about > div > p { color: var(--ink-body); font-size: var(--t-body); line-height: 1.65; }
 
-.values { margin-top: var(--s6); }
+/* Değerler artık .about ızgarasının SAĞ sütunu (eskiden sol sütunun
+   altındaydı, sağda kırmızı slogan paneli vardı). Üstten boşluk yok:
+   sol sütundaki başlıkla aynı hizada başlıyor. */
+.values { margin-top: 0; align-self: start; }
 .values > div { padding: var(--s3) var(--s3); }
 .values h3 { font-size: 1.0625rem; margin-bottom: var(--s1); letter-spacing: 0; }
 .values p { font-size: var(--t-sm); line-height: 1.55; color: var(--ink-muted); }
 
 /* Depo gorseli ve yonetim kurulu alintisi kaldirildi; ayni izgara hucresine
    PDF kapagindaki slogan geldi. Kosegen ayrim da kapaktan aliniyor. */
-.motto {
-  align-self: stretch;          /* .about'un align-items:start degerini ezer */
-  display: grid; place-items: center;
-  min-height: 22rem;
-  padding: var(--s7) var(--s4);
-  border-radius: var(--radius);
-  background:
-    linear-gradient(146deg, rgba(255,255,255,0.06) 0 44%, rgba(0,0,0,0.18) 44%),
-    var(--brand);
-  color: #fff;
+/* Slogan. Web fontu DEĞİL, görsel: kurumsal PDF'in kullandığı Libel Suit
+   ticari bir font, web'e gömülmesi ayrı lisans isterdi. Yazı PDF'ten
+   çıkarıldı ve marka rengine boyandı (RGB sabit, alfa kanalı korunarak).
+   Zemin yok - hakkımızda bloğunun altında, ortalanmış duruyor. */
+.slogan {
+  margin: var(--s7) 0 0;
+  text-align: center;
 }
-/* Slogan web fontu degil, GORSEL. Kurumsal PDF'in kullandigi Libel Suit
-   ticari bir font; web'e gomulmesi ayri lisans isterdi. Yazi dogrudan PDF'ten
-   cikarildi: beyaz metin kirmizi zeminden alfa kanalina ayristirildi (gri
-   acilimla zemin kestirildi, kanallar uzerinden kapsama orani hesaplandi),
-   virgulden ikiye bolunup ust uste dizildi. Beyaz oldugu icin dosya gri+alfa
-   (LA) PNG olarak kaydedildi - RGBA'ya gore %22 kucuk. */
-.motto img {
-  width: 100%; max-width: 30rem; height: auto;
+.slogan img {
+  width: 100%; max-width: 34rem; height: auto;
+  display: inline-block;
 }
 
 /* vizyon / misyon / çağrı şeridi */
@@ -1432,10 +1427,9 @@ img { display: block; max-width: 100%; height: auto; }
   .hero-actions { margin-top: var(--s4); }
   .stats { margin-top: var(--s5); padding-top: var(--s3); gap: var(--s3); }
 
-  /* --- slogan paneli: 22rem gorseli tek satirlik yaziya gore olculmustu.
-         Gorselle birlikte panel 352px olup icinde 109px'lik yazi kaliyor,
-         243px bos kirmizi aciliyordu. --- */
-  .motto { min-height: 14rem; padding: var(--s5) var(--s3); }
+  /* --- slogan: dar ekranda üstteki boşluk kısalıyor --- */
+  .slogan { margin-top: var(--s5); }
+  .slogan img { max-width: 20rem; }
 
   /* --- iş ortakları şeridi: dar ekranda hücre biraz daralıyor --- */
   .ref-ray li { width: 214px; height: 100px; }

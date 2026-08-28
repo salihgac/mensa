@@ -3,6 +3,9 @@
 # dosya sınırını aşıyor, push reddedilirdi.
 yeni fotolar/
 yeni fotolar.zip
+# Urun kartlari icin alinan ham fotograflar (19 MB); siteye giden
+# surumleri img/urun/ altinda, 900x563 webp olarak duruyor.
+ürün fotoları/
 
 # --- gizli / kurumsal belgeler ---
 # "tüm ürünler.pdf" stok kartları dökümü: ALIŞ FİYATLARI ve tedarikçi
