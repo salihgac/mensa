@@ -55,6 +55,24 @@
      transform'la kayan bir rayda sürükleme ile animasyon birbirini ezerdi.
      Ray iki özdeş yarıdan oluşuyor; kaydırma bir yarıyı geçince başa
      alınıyor, desen aynı olduğu için sıçrama görünmüyor. */
+  /* Şeridin ikinci yarısı HTML'de DEĞİL burada üretiliyor. Sonsuz döngü
+     için hücrelerin iki kez bulunması gerekiyor ama aynı 38 logoyu (ya da
+     27 firmayı) HTML'e iki kez yazmak sayfayı boş yere şişiriyordu.
+     Kopyalar aria-hidden ve alt="" ile işaretleniyor: ekran okuyucu ve
+     arama motoru aynı içeriği iki kez görmesin. */
+  function yariyiKopyala(ray) {
+    var ogeler = ray.children, n = ogeler.length;
+    var parca = document.createDocumentFragment();
+    for (var i = 0; i < n; i++) {
+      var kopya = ogeler[i].cloneNode(true);
+      kopya.setAttribute("aria-hidden", "true");
+      var g = kopya.querySelector("img");
+      if (g) g.setAttribute("alt", "");
+      parca.appendChild(kopya);
+    }
+    ray.appendChild(parca);
+  }
+
   function kayanSerit(kutu, ray, hiz, mq) {
     var suruklu = false, baslangicX = 0, baslangicKaydirma = 0;
     var yariGenislik = function () { return ray.scrollWidth / 2; };
@@ -140,16 +158,20 @@
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
     var galeri = document.querySelector(".serit");
     if (galeri && galeri.querySelector(".serit-ray")) {
+      // Galeri şeridinin iki grubu HTML'de duruyor (mozaik blok düzeni
+      // orada kuruluyor), yalnızca kaydırma burada.
       kayanSerit(galeri, galeri.querySelector(".serit-ray"), 1.1);
     }
     var refKutu = document.querySelector(".ref-serit");
     if (refKutu && refKutu.querySelector(".ref-ray")) {
+      yariyiKopyala(refKutu.querySelector(".ref-ray"));
       // İş ortakları şeridi de yalnızca telefonda akıyor.
       kayanSerit(refKutu, refKutu.querySelector(".ref-ray"), 0.95,
                  matchMedia("(max-width: 620px)"));
     }
     var markaKutu = document.querySelector(".marka-serit");
     if (markaKutu && markaKutu.querySelector(".marka-ray")) {
+      yariyiKopyala(markaKutu.querySelector(".marka-ray"));
       /* Marka şeridi YALNIZCA telefonda akıyor; masaüstünde aynı hücreler
          CSS ile altı sütunlu ızgaraya diziliyor, kaydırma yok.
          Logolar fotoğraflardan küçük, aynı hızda daha telaşlı görünüyor. */
@@ -161,6 +183,8 @@
   /* ---- tam ekran katmanlar (markalar + iş ortakları) ------------------ */
   function tamEkranKatman(acButon, katman, kapatButon) {
     if (!acButon || !katman || typeof katman.showModal !== "function") return;
+    // Buton HTML'de gizli: JS ya da <dialog> yoksa ölü bir düğme durmasın.
+    acButon.hidden = false;
 
     acButon.addEventListener("click", function () {
       katman.showModal();
@@ -182,15 +206,50 @@
     katman.addEventListener("click", function (e) { if (e.target === katman) kapat(); });
   }
 
+  /* Katman listeleri de HTML'de DEĞİL burada üretiliyor: aynı 38 logo
+     şeritte zaten var, üçüncü kez yazmak sayfayı şişiriyordu. Kaynak
+     şeridin ÖZGÜN yarısı (kopyalar aria-hidden, onlar atlanıyor).
+     --i satır içinde veriliyor; katmandaki kademeli beliriş ona bağlı. */
+  function katmaniDoldur(liste, kaynakRay, gorselMi) {
+    if (!liste || !kaynakRay || liste.children.length) return;
+    var ogeler = kaynakRay.children, parca = document.createDocumentFragment(), n = 0;
+    for (var i = 0; i < ogeler.length; i++) {
+      if (ogeler[i].getAttribute("aria-hidden") === "true") continue;  // kopya
+      var li = document.createElement("li");
+      li.style.setProperty("--i", n++);
+      if (gorselMi) {
+        var g = ogeler[i].querySelector("img");
+        if (!g) continue;
+        var yeni = document.createElement("img");
+        yeni.src = g.getAttribute("src");
+        yeni.width = g.width; yeni.height = g.height;
+        yeni.loading = "lazy"; yeni.decoding = "async";
+        yeni.alt = g.getAttribute("alt") || "";
+        li.appendChild(yeni);
+      } else {
+        li.textContent = ogeler[i].textContent.trim();
+      }
+      parca.appendChild(li);
+    }
+    liste.appendChild(parca);
+  }
+
+  var markaKatmani = document.querySelector(".marka-tum:not(.ref-tum)");
+  var refKatmani = document.querySelector(".ref-tum");
+  katmaniDoldur(markaKatmani && markaKatmani.querySelector(".marka-tum-liste"),
+                document.querySelector(".marka-ray"), true);
+  katmaniDoldur(refKatmani && refKatmani.querySelector(".ref-tum-liste"),
+                document.querySelector(".ref-ray"), false);
+
   tamEkranKatman(
     document.querySelector(".marka-tumu-ac"),
-    document.querySelector(".marka-tum:not(.ref-tum)"),
-    document.querySelector(".marka-tum:not(.ref-tum) .marka-tum-kapat")
+    markaKatmani,
+    markaKatmani && markaKatmani.querySelector(".marka-tum-kapat")
   );
   tamEkranKatman(
     document.querySelector(".ref-tumu-ac"),
-    document.querySelector(".ref-tum"),
-    document.querySelector(".ref-tum .ref-tum-kapat")
+    refKatmani,
+    refKatmani && refKatmani.querySelector(".ref-tum-kapat")
   );
 
   /* ---- mobil menü ------------------------------------------------- */
