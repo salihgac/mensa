@@ -436,24 +436,9 @@ img { display: block; max-width: 100%; height: auto; }
   height: 0; overflow: visible; pointer-events: none;
 }
 .hero-tugla.acik { height: 46px; margin-top: var(--s4); }
-.hero-tugla video,
-.hero-tugla-yedek {
+.hero-tugla video {
   position: absolute; left: 0; bottom: 0;
   width: 100%; height: auto; display: block;
-}
-/* Yedek görsel yalnızca duvarı içeriyor (videonun son karesi), üstündeki
-   boş düşme alanı yok - bu yüzden kutuyu tam dolduruyor. */
-.hero-tugla-yedek { height: 100%; object-fit: fill; }
-
-@media (max-width: 620px) {
-  /* Duvar videonun ALT %35'i; dar ekranda video 350 piksele inince duvar
-     25 piksel kalıyor ve ince bir çizgi gibi okunuyordu. Video %180'e
-     büyütülüp kutu yükseltiliyor: duvar ~45 piksel, üstünde tuğlaların
-     düşerken göründüğü bir pay kalıyor. Taşan sağ kenar kırpılıyor -
-     overflow olmadan sayfa yatay kayardı. */
-  .hero-tugla.acik { height: 92px; overflow: hidden; }
-  .hero-tugla video { width: 180%; }
-  .hero-tugla-yedek { height: 46px; top: auto; }
 }
 
 .stats {
