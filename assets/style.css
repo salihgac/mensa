@@ -763,7 +763,7 @@ img { display: block; max-width: 100%; height: auto; }
     width: auto;
   }
   /* İkinci yarı yalnızca şeridin sonsuz dönmesi için var. */
-  .marka-ray li:nth-child(n + 39) { display: none; }
+  .marka-ray li:nth-child(n + 40) { display: none; }
   .marka-ray li { width: auto; height: auto; min-height: 104px; }
   .marka-ray img { max-height: 64px; }
   /* Masaüstünde zaten hepsi ızgarada duruyor. Bu kural GENİŞLİK
