@@ -77,9 +77,8 @@
     var suruklu = false, baslangicX = 0, baslangicKaydirma = 0;
     var yariGenislik = function () { return ray.scrollWidth / 2; };
 
-    // Sağdan sola akış: scrollLeft ARTAR (içerik sola yürür). Ortadan
-    // başlanıyor ki iki yönde de kenarda boşluk kalmasın.
-    var konum = yariGenislik();
+    // Sağdan sola akış: scrollLeft ARTAR (içerik sola yürür).
+    var konum = 0;
     kutu.scrollLeft = konum;
     /* Parmak değdiğinde otomatik akış susar. Zaman damgası tutuluyor:
        iOS'ta ivmeli kaydırma parmak kalktıktan SONRA da sürüyor, o
@@ -90,10 +89,16 @@
        `kutu.scrollLeft -= hiz` yazılırsa tarayıcı değeri tam sayıya
        yuvarlar; kare başına 1 pikselden küçük adımlarda (marka şeridi
        0,4 px) okunan değer hep aynı kalır ve şerit hiç kımıldamaz. */
+    /* Bir YARI boyunca ilerleyince başa alınıyor - iki yarı özdeş olduğu
+       için 0 ile yarı aynı görüntüyü verir, sıçrama görünmez.
+       İki yarının SONUNU beklemek hataydı: tarayıcı scrollLeft'i
+       (toplam genişlik - ekran genişliği) değerinde kilitliyor, sayaç
+       ise ilerlemeye devam ediyordu; aradaki fark kapanana kadar şerit
+       donuk duruyordu (geniş ekranda ~20 saniye). */
     var sarmala = function () {
       var yari = yariGenislik();
-      if (konum <= 0) konum += yari;
-      else if (konum >= yari * 2) konum -= yari;
+      if (konum >= yari) konum -= yari;
+      else if (konum < 0) konum += yari;
     };
 
     var adim = function () {
