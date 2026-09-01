@@ -49,6 +49,71 @@
     tuglaVideo.load();
   }
 
+  /* ---- depodan: dikey videolar tek çerçevede ------------------------- */
+  /* Videolar sırayla oynar, sonuncudan sonra başa döner. Aynı anda TEK
+     dosya yükleniyor; bölüm ekrana girmeden hiçbiri indirilmiyor ve
+     ekrandan çıkınca duruyor - boşa veri harcanmasın. */
+  var depoCerceve = document.querySelector(".depodan-cerceve");
+  var depoVideo = depoCerceve && depoCerceve.querySelector(".depodan-video");
+  if (depoVideo) {
+    var depoListe = ["video/depodan/01.mp4", "video/depodan/02.mp4"];
+    var depoKapak = ["video/depodan/01.webp", "video/depodan/02.webp"];
+    var sira = 0, gorunur = false;
+    var noktalar = depoCerceve.querySelector(".depodan-noktalar");
+
+    for (var n = 0; n < depoListe.length; n++) {
+      noktalar.appendChild(document.createElement("span"));
+    }
+    var noktalariTazele = function () {
+      for (var i = 0; i < noktalar.children.length; i++) {
+        noktalar.children[i].classList.toggle("acik", i === sira);
+      }
+    };
+    noktalariTazele();
+
+    var yukle = function (oynat) {
+      depoVideo.poster = depoKapak[sira];
+      depoVideo.src = depoListe[sira];
+      noktalariTazele();
+      if (oynat) {
+        var s = depoVideo.play();
+        // Otomatik oynatma engellenirse kapak görseli ekranda kalır.
+        if (s && s.catch) s.catch(function () {});
+      }
+    };
+
+    depoVideo.addEventListener("ended", function () {
+      sira = (sira + 1) % depoListe.length;
+      yukle(true);
+    });
+    // Bir video açılamazsa sıradakine geç, çerçeve boş kalmasın.
+    depoVideo.addEventListener("error", function () {
+      if (depoListe.length < 2) return;
+      sira = (sira + 1) % depoListe.length;
+      yukle(gorunur);
+    });
+    // Noktaya dokununca o videoya atla.
+    noktalar.addEventListener("click", function (e) {
+      var i = Array.prototype.indexOf.call(noktalar.children, e.target);
+      if (i < 0 || i === sira) return;
+      sira = i; yukle(true);
+    });
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (girisler) {
+        gorunur = girisler[0].isIntersecting;
+        if (gorunur) {
+          if (!depoVideo.src) yukle(true);
+          else { var s = depoVideo.play(); if (s && s.catch) s.catch(function () {}); }
+        } else if (!depoVideo.paused) {
+          depoVideo.pause();
+        }
+      }, { threshold: 0.35 }).observe(depoCerceve);
+    } else {
+      yukle(true);
+    }
+  }
+
   /* ---- kayan şeritler (genel görünüm + markalar) --------------------- */
   /* Kaydırma CSS animasyonuyla DEĞİL, tarayıcının kendi yatay kaydırmasıyla
      yapılıyor: kullanıcının şeridi tutup sürükleyebilmesi isteniyor,

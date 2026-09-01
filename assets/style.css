@@ -1012,6 +1012,62 @@ img { display: block; max-width: 100%; height: auto; }
   content: "\2191"; display: inline-block; margin-left: 0.4em;
 }
 
+/* --- 4.7a depodan (dikey videolar) ---------------------------------- */
+/* Tek çerçeve, içinde videolar sırayla dönüyor. Üç ayrı pencere yerine
+   tek pencere: hem sayfa hafif kalıyor (aynı anda tek dosya iniyor) hem
+   de göz tek yere odaklanıyor. */
+.depodan {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(2rem, 4vw, 3.5rem); align-items: center;
+  /* Genişlik sınırı: sayfanın tamamına yayılınca metinle video arasında
+     kocaman bir boşluk kalıyor, ikisi ilgisiz iki öge gibi duruyordu. */
+  max-width: 58rem;
+  margin-bottom: var(--s7);
+}
+.depodan-yazi h3 { font-size: var(--t-h3); margin-bottom: var(--s2); }
+.depodan-yazi p {
+  color: var(--ink-body); font-size: var(--t-body); line-height: 1.65;
+  max-width: 42ch; margin: 0 0 var(--s3);
+}
+.depodan-ig {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  min-height: 44px;
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-sm);
+  color: var(--brand);
+}
+.depodan-ig:hover { color: var(--brand-hover); }
+.depodan-ig svg { flex: none; }
+
+/* Telefon oranında çerçeve. Zemin koyu: video yüklenene kadar ve
+   kapak görselinin kenarlarında boşluk beyaz parlamasın. */
+.depodan-cerceve {
+  position: relative; flex: none;
+  width: clamp(210px, 24vw, 290px); aspect-ratio: 9 / 16;
+  border-radius: var(--radius); overflow: hidden;
+  background: var(--dark);
+  box-shadow: 0 18px 44px rgba(26, 22, 20, 0.18);
+}
+.depodan-video {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+/* Sıra göstergesi: videonun altına binen küçük çizgiler. */
+.depodan-noktalar {
+  position: absolute; left: 0; right: 0; bottom: 10px;
+  display: flex; justify-content: center; gap: 6px;
+}
+.depodan-noktalar span {
+  width: 26px; height: 3px; border-radius: 2px;
+  background: rgba(255, 255, 255, 0.42);
+}
+.depodan-noktalar span.acik { background: #fff; }
+
+@media (max-width: 860px) {
+  /* Tek sütun: metin üstte, çerçeve ortada. */
+  .depodan { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .depodan-yazi p { margin-inline: auto; }
+  .depodan-cerceve { width: min(280px, 78vw); }
+}
+
 /* --- 4.7 genel görünüm şeridi --------------------------------------- */
 /* 25 fotoğraf soldan sağa akıyor. Izgara yerine şerit: fotoğraf sayısı
    bir ekrana sığmıyor. Bloklar mozaik: bir büyük, yanında bir uzun ve
