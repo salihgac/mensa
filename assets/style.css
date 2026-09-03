@@ -1065,16 +1065,33 @@ img { display: block; max-width: 100%; height: auto; }
 .depodan-video {
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
-/* Sıra göstergesi: videonun altına binen küçük çizgiler. */
+/* Alt kenara ince bir karartma. Göstergeler beyaz; aydınlık bir kare
+   (gökyüzü, beton zemin) denk geldiğinde çizgiler tamamen kayboluyordu. */
+.depodan-cerceve::after {
+  content: ""; position: absolute; inset: auto 0 0 0; height: 5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0));
+  pointer-events: none;
+}
+/* Sıra göstergesi: videonun altına binen küçük çizgiler. Video sayısı
+   arttıkça çizgiler daralıyor (26px sabit kalsa 10 video çerçeveyi
+   taşırıyordu); flex-basis 0 + max-width ile şerit hep içeride kalıyor. */
 .depodan-noktalar {
-  position: absolute; left: 0; right: 0; bottom: 10px;
-  display: flex; justify-content: center; gap: 6px;
+  position: absolute; left: 0; right: 0; bottom: 10px; z-index: 1;
+  display: flex; justify-content: center; gap: 4px;
+  padding-inline: 12px;
 }
 .depodan-noktalar span {
-  width: 26px; height: 3px; border-radius: 2px;
-  background: rgba(255, 255, 255, 0.42);
+  flex: 1 1 0; max-width: 26px; min-width: 0;
+  height: 3px; border-radius: 2px;
+  background: rgba(255, 255, 255, 0.55);
+  /* Dokunma hedefini çizginin dışına taşır: 3px'lik bir çubuğa parmakla
+     isabet ettirmek zor, üstteki şeffaf alan da tıklamayı yakalıyor.
+     box-sizing sayfa genelinde border-box; burada content-box şart,
+     yoksa 20px dolgu 3px yüksekliği yiyor ve çizgi hiç çizilmiyor. */
+  box-sizing: content-box; padding-block: 10px;
+  background-clip: content-box; cursor: pointer;
 }
-.depodan-noktalar span.acik { background: #fff; }
+.depodan-noktalar span.acik { background: #fff; background-clip: content-box; }
 
 @media (max-width: 860px) {
   /* Tek sütun: metin üstte, oynatıcı ortada. */

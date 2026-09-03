@@ -56,8 +56,13 @@
   var depoCerceve = document.querySelector(".depodan-cerceve");
   var depoVideo = depoCerceve && depoCerceve.querySelector(".depodan-video");
   if (depoVideo) {
-    var depoListe = ["video/depodan/01.mp4", "video/depodan/02.mp4"];
-    var depoKapak = ["video/depodan/01.webp", "video/depodan/02.webp"];
+    // video/depodan/01..10 - yeni video eklenince yalnizca bu sayi degisir.
+    var depoAdet = 10, depoListe = [], depoKapak = [];
+    for (var d = 1; d <= depoAdet; d++) {
+      var ad = "video/depodan/" + (d < 10 ? "0" : "") + d;
+      depoListe.push(ad + ".mp4");
+      depoKapak.push(ad + ".webp");
+    }
     var sira = 0, gorunur = false;
     var noktalar = depoCerceve.querySelector(".depodan-noktalar");
 
