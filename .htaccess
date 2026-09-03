@@ -30,7 +30,21 @@ AddType image/webp .webp
   ExpiresByType application/pdf      "access plus 7 days"
 </IfModule>
 
-# --- 4. Sıkıştırma ----------------------------------------------------
+# --- 4. Kataloğu indirtme ---------------------------------------------
+# Telefonda "indir" bağlantısı PDF'i indirmiyor, görüntüleyicide açıyordu:
+# HTML'deki download özelliği mobil tarayıcılarda PDF için yok sayılıyor.
+# Adresin sonuna ?indir=1 eklenince sunucu "kaydet" başlığı gönderiyor,
+# tarayıcının seçme şansı kalmıyor. Bayraksız adres (iframe içindeki
+# önizleme ve "Kataloğu Aç" düğmesi) eskisi gibi açılmaya devam ediyor.
+<IfModule mod_rewrite.c>
+  RewriteCond %{QUERY_STRING} (^|&)indir=1($|&)
+  RewriteRule \.pdf$ - [E=PDF_INDIR:1]
+</IfModule>
+<IfModule mod_headers.c>
+  Header set Content-Disposition "attachment; filename=\"Mensa-E-Katalog.pdf\"" env=PDF_INDIR
+</IfModule>
+
+# --- 5. Sıkıştırma ----------------------------------------------------
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/css text/javascript \
     application/javascript image/svg+xml application/manifest+json
