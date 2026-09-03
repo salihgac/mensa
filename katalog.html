@@ -68,9 +68,9 @@
       min-height: 52px; padding: 0.875rem 2.25rem; border-radius: 4px;
       background: var(--brand); color: #fff; font-weight: 700; text-decoration: none;
     }
-    .mobil-ac-indir { font-size: 0.875rem; color: var(--ink-muted); text-decoration: underline; }
-    /* Üst çubuktaki indirme butonu gizleniyor: ortadaki blokta zaten
-       hem açma hem indirme var, üçüncü bir düğme kafa karıştırıyor. */
+    /* Üst çubuktaki indirme butonu gizleniyor: telefonda PDF'i indirmek
+       yerine görüntüleyicide açıyordu, tek işe yarayan yol "Kataloğu Aç".
+       İndirme masaüstünde duruyor. */
     .bar .indir { display: none; }
   }
 </style>
@@ -97,9 +97,6 @@
   <p class="mobil-ac-yazi">Katalog 16 sayfa. Telefonda tam görüntülemek için açın.</p>
   <a class="mobil-ac-btn" href="katalog/mensa-e-katalog.pdf" target="_blank" rel="noopener">
     Kataloğu Aç
-  </a>
-  <a class="mobil-ac-indir" href="katalog/mensa-e-katalog.pdf?indir=1" download="Mensa-E-Katalog.pdf">
-    ya da indir (PDF · 8,7 MB)
   </a>
 </div>
 
