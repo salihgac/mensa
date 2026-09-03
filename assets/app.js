@@ -408,15 +408,21 @@
     var visible = new Map();
     var spy = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) visible.set(e.target.id, e.intersectionRatio);
+        // Ölçü ORAN degil, seridin icinde kapladigi PIKSEL yuksekligi.
+        // Oran bolumun kendi boyuna gore hesaplaniyor: galeri bolumu
+        // 1600px uzun oldugu icin serit tamamen icindeyken bile orani
+        // 0,15'i gecmiyor, esikler hic tetiklenmiyordu - vurgu bir
+        // onceki bolumde takili kaliyordu.
+        if (e.isIntersecting) visible.set(e.target.id, e.intersectionRect.height);
         else visible.delete(e.target.id);
       });
       if (!visible.size) return;
-      // en çok görünen bölüm kazanır
       var best = null, top = -1;
-      visible.forEach(function (ratio, id) { if (ratio > top) { top = ratio; best = id; } });
+      visible.forEach(function (yukseklik, id) {
+        if (yukseklik > top) { top = yukseklik; best = id; }
+      });
       if (best) setCurrent(best);
-    }, { rootMargin: "-20% 0px -55% 0px", threshold: [0.15, 0.4, 0.75] });
+    }, { rootMargin: "-20% 0px -55% 0px", threshold: [0, 0.15, 0.4, 0.75] });
 
     sections.forEach(function (s) { spy.observe(s); });
   }
