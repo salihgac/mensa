@@ -1125,11 +1125,20 @@ img { display: block; max-width: 100%; height: auto; }
 .depodan-noktalar span.acik { background: #fff; background-clip: content-box; }
 
 @media (max-width: 860px) {
-  /* Tek sütun: metin üstte, oynatıcı ortada. */
-  .depodan { grid-template-columns: 1fr; justify-items: center; text-align: center; }
-  /* Etiket flex kutusu; text-align onu ortalamıyor, tek başına sola
-     yaslı kalıyordu. */
-  .depodan-etiket { justify-content: center; }
+  /* Tek sütun: metin üstte, oynatıcı ortada.
+     row-gap sıfır: aşağıdaki `display: contents` yüzünden metnin her
+     satırı ayrı ızgara hücresi oluyor, 3,5rem'lik boşluk hepsinin
+     arasına giriyordu. Dikey aralığı öğelerin kendi margin'leri veriyor. */
+  .depodan {
+    grid-template-columns: 1fr; justify-items: center; text-align: center;
+    row-gap: 0;
+  }
+  /* Maddeler çerçevenin ALTINA geçsin diye metin kutusu kaldırılıyor:
+     çocukları doğrudan ızgaraya giriyor, sıraları `order` ile veriliyor.
+     Kutu DOM'da duruyor, `.depodan-yazi p` gibi seçiciler bozulmuyor. */
+  .depodan-yazi { display: contents; }
+  .depodan-liste { order: 1; margin-top: var(--s5); }
+  .depodan-oynatici { margin-top: var(--s3); }
   .depodan-yazi p { margin-inline: auto; }
   /* Liste blok olarak ortalı ama maddeler kendi içinde sola hizalı:
      her satır ayrı ayrı ortalanınca tikler tırtıklı duruyordu. */
