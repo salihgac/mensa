@@ -1027,16 +1027,20 @@ img { display: block; max-width: 100%; height: auto; }
   align-items: center;
   margin-bottom: var(--s7);
 }
-.depodan-yazi .eyebrow--lg { margin-bottom: var(--s2); }
-.depodan-yazi h3 { font-size: var(--t-h3); margin-bottom: var(--s2); }
+/* Bölüm etiketi Depodan bloğunun DIŞINDA, bölümün en üstünde. */
+.depodan-etiket { margin-bottom: var(--s5); }
+
+/* Depodan bloğu bölümün ilk başlığı; "Ataşehir'deki 6.500 m² depomuz"
+   ile aynı puntoda ki ikisi eşit ağırlıkta iki blok gibi okunsun. */
+.depodan-yazi h3 { font-size: var(--t-h2); margin-bottom: var(--s3); }
 .depodan-yazi p {
-  color: var(--ink-body); font-size: var(--t-body); line-height: 1.65;
-  max-width: 42ch; margin: 0 0 var(--s3);
+  color: var(--ink-body); font-size: var(--t-lead); line-height: 1.6;
+  max-width: 38ch; margin: 0 0 var(--s3);
 }
 .depodan-ig {
   display: inline-flex; align-items: center; gap: 0.5rem;
   min-height: 44px;
-  font-family: var(--font-display); font-weight: 700; font-size: var(--t-sm);
+  font-family: var(--font-display); font-weight: 700; font-size: var(--t-body);
   color: var(--brand);
 }
 .depodan-ig:hover { color: var(--brand-hover); }
@@ -1103,7 +1107,7 @@ img { display: block; max-width: 100%; height: auto; }
   .depodan { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   /* Etiket flex kutusu; text-align onu ortalamıyor, tek başına sola
      yaslı kalıyordu. */
-  .depodan-yazi .eyebrow--lg { justify-content: center; }
+  .depodan-etiket { justify-content: center; }
   .depodan-yazi p { margin-inline: auto; }
   /* Genişlik okların yerini de hesaba katıyor: 2 x 40px düğme + boşluklar
      dar telefonda (360px) çerçeveyi taşırmasın. */
