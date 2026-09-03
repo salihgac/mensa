@@ -1046,6 +1046,26 @@ img { display: block; max-width: 100%; height: auto; }
 .depodan-ig:hover { color: var(--brand-hover); }
 .depodan-ig svg { flex: none; }
 
+/* Kısa bilgi maddeleri: metin sütunu çerçevenin yanında boş kalıyordu.
+   İşaret glif değil, iki kenarlıktan çizilmiş tik - yazı tipi ne olursa
+   olsun aynı görünüyor. */
+.depodan-liste {
+  list-style: none; margin: var(--s4) 0 0; padding: var(--s4) 0 0;
+  border-top: 1px solid var(--line);
+  display: grid; gap: var(--s2);
+  max-width: 38ch;
+}
+.depodan-liste li {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  color: var(--ink-body); font-size: var(--t-body); line-height: 1.5;
+}
+.depodan-liste li::before {
+  content: ""; flex: none;
+  width: 0.4em; height: 0.75em; margin-top: 0.15em;
+  border: solid var(--brand); border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
 /* Telefon oranında çerçeve. Zemin koyu: video yüklenene kadar ve
    kapak görselinin kenarlarında boşluk beyaz parlamasın. */
 /* Oynatıcı: [geri ok] [çerçeve] [ileri ok] tek satır. Oklar çerçevenin
@@ -1109,6 +1129,10 @@ img { display: block; max-width: 100%; height: auto; }
      yaslı kalıyordu. */
   .depodan-etiket { justify-content: center; }
   .depodan-yazi p { margin-inline: auto; }
+  /* Liste blok olarak ortalı ama maddeler kendi içinde sola hizalı:
+     her satır ayrı ayrı ortalanınca tikler tırtıklı duruyordu. */
+  .depodan-liste { margin-inline: auto; width: max-content; max-width: 100%; }
+  .depodan-liste li { text-align: left; }
   /* Genişlik okların yerini de hesaba katıyor: 2 x 40px düğme + boşluklar
      dar telefonda (360px) çerçeveyi taşırmasın. */
   .depodan-cerceve { width: min(320px, calc(100vw - 8rem)); }
