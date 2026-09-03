@@ -1022,10 +1022,9 @@ img { display: block; max-width: 100%; height: auto; }
 .depodan {
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(2rem, 4vw, 3.5rem);
-  /* Metin çerçevenin üst hizasında: ortalanınca 640px'lik çerçevenin
-     karşısında sayfanın ortasına düşüyor, üstteki bölüm başlığından
-     kopuk duruyordu. */
-  align-items: start;
+  /* Metin çerçeveyle dikey olarak ortalı. Üste yaslanınca 640px'lik
+     çerçevenin karşısında altında kocaman bir boşluk kalıyordu. */
+  align-items: center;
   margin-bottom: var(--s7);
 }
 .depodan-yazi .eyebrow--lg { margin-bottom: var(--s2); }
