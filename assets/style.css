@@ -1111,18 +1111,22 @@ img { display: block; max-width: 100%; height: auto; }
   display: flex; justify-content: center; gap: 4px;
   padding-inline: 12px;
 }
+/* span yalnızca dokunma hedefi: 3px'lik bir çubuğa parmakla isabet
+   ettirmek zor, üstündeki şeffaf dolgu da tıklamayı yakalıyor.
+   box-sizing sayfa genelinde border-box; burada content-box şart,
+   yoksa 20px dolgu 3px yüksekliği yiyor ve çubuk hiç çizilmiyor. */
 .depodan-noktalar span {
   flex: 1 1 0; max-width: 26px; min-width: 0;
-  height: 3px; border-radius: 2px;
-  background: rgba(255, 255, 255, 0.55);
-  /* Dokunma hedefini çizginin dışına taşır: 3px'lik bir çubuğa parmakla
-     isabet ettirmek zor, üstteki şeffaf alan da tıklamayı yakalıyor.
-     box-sizing sayfa genelinde border-box; burada content-box şart,
-     yoksa 20px dolgu 3px yüksekliği yiyor ve çizgi hiç çizilmiyor. */
-  box-sizing: content-box; padding-block: 10px;
-  background-clip: content-box; cursor: pointer;
+  height: 3px; box-sizing: content-box; padding-block: 10px;
+  cursor: pointer;
 }
-.depodan-noktalar span.acik { background: #fff; background-clip: content-box; }
+/* Görünen çubuk. Dolu kısım videonun oynanan süresini gösteriyor:
+   --dolu her karede JS ile güncelleniyor (assets/app.js). */
+.depodan-noktalar i {
+  display: block; height: 100%; border-radius: 2px;
+  background: linear-gradient(to right,
+    #fff var(--dolu, 0%), rgba(255, 255, 255, 0.5) var(--dolu, 0%));
+}
 
 @media (max-width: 860px) {
   /* Tek sütun: metin üstte, oynatıcı ortada.

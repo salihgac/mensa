@@ -68,15 +68,50 @@
     var sira = 0, gorunur = false;
     var noktalar = depoCerceve.querySelector(".depodan-noktalar");
 
+    // Her gosterge iki parcali: disardaki span dokunma hedefi, icerideki
+    // <i> gorunen cubuk. Cubugun dolulugu --dolu ile veriliyor.
+    var noktaCubuk = [];
     for (var n = 0; n < depoListe.length; n++) {
-      noktalar.appendChild(document.createElement("span"));
+      var kutu = document.createElement("span");
+      var cubuk = document.createElement("i");
+      kutu.appendChild(cubuk);
+      noktalar.appendChild(kutu);
+      noktaCubuk.push(cubuk);
     }
+    var doluluk = function (i, oran) {
+      noktaCubuk[i].style.setProperty("--dolu", (oran * 100).toFixed(2) + "%");
+    };
     var noktalariTazele = function () {
       for (var i = 0; i < noktalar.children.length; i++) {
         noktalar.children[i].classList.toggle("acik", i === sira);
+        // Oynanmislar dolu, siradakiler bos; oynayan sifirdan basliyor.
+        doluluk(i, i < sira ? 1 : 0);
       }
     };
     noktalariTazele();
+
+    /* Oynayan videonun cubugu sureyle birlikte doluyor. Olcum timeupdate
+       ile degil rAF ile: timeupdate saniyede ~4 kez tetikleniyor, cubuk
+       kesik kesik ilerliyordu. Dongu yalnizca video oynarken calisiyor. */
+    var kareId = 0;
+    var ilerlet = function () {
+      kareId = 0;
+      var sure = depoVideo.duration;
+      if (sure && isFinite(sure)) {
+        doluluk(sira, Math.min(1, depoVideo.currentTime / sure));
+      }
+      if (!depoVideo.paused && !depoVideo.ended) {
+        kareId = requestAnimationFrame(ilerlet);
+      }
+    };
+    var ilerlemeBaslat = function () {
+      if (!kareId) kareId = requestAnimationFrame(ilerlet);
+    };
+    var ilerlemeDurdur = function () {
+      if (kareId) { cancelAnimationFrame(kareId); kareId = 0; }
+    };
+    depoVideo.addEventListener("play", ilerlemeBaslat);
+    depoVideo.addEventListener("pause", ilerlemeDurdur);
 
     var yukle = function (oynat) {
       depoVideo.poster = depoKapak[sira];
@@ -90,6 +125,8 @@
     };
 
     depoVideo.addEventListener("ended", function () {
+      ilerlemeDurdur();
+      doluluk(sira, 1);          // biten video cubugu tam dolu kalsin
       sira = (sira + 1) % depoListe.length;
       yukle(true);
     });
@@ -101,7 +138,10 @@
     });
     // Noktaya dokununca o videoya atla.
     noktalar.addEventListener("click", function (e) {
-      var i = Array.prototype.indexOf.call(noktalar.children, e.target);
+      // Tiklama <i> cubuguna gelebilir; dokunma hedefi olan span'a cikiliyor.
+      var hedef = e.target.closest ? e.target.closest("span") : null;
+      if (!hedef || hedef.parentNode !== noktalar) return;
+      var i = Array.prototype.indexOf.call(noktalar.children, hedef);
       if (i < 0 || i === sira) return;
       sira = i; yukle(true);
     });
