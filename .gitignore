@@ -31,3 +31,8 @@ img/marka/eski/
 animasyon/node_modules/
 animasyon/out/
 animasyon/test/
+
+# --- Depodan bolumu ham videolari ---
+# Telefondan/Instagram'dan gelen orijinal .MOV / .mp4 dosyalari (onlarca MB).
+# Siteye giden surumleri video/depodan/ altinda, 720x1280 H.264 olarak duruyor.
+video/depodan/ham/

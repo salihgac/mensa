@@ -99,6 +99,18 @@
       sira = i; yukle(true);
     });
 
+    // Çerçevenin yanındaki geri / ileri okları. Tek video varsa gizleniyor:
+    // basılacak bir yer yokken düğme durması kafa karıştırıyor.
+    var oklar = depoCerceve.parentNode.querySelectorAll(".depodan-ok");
+    for (var o = 0; o < oklar.length; o++) {
+      if (depoListe.length < 2) { oklar[o].hidden = true; continue; }
+      oklar[o].addEventListener("click", function () {
+        var yon = Number(this.getAttribute("data-yon")) || 1;
+        sira = (sira + yon + depoListe.length) % depoListe.length;
+        yukle(true);
+      });
+    }
+
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (girisler) {
         gorunur = girisler[0].isIntersecting;
