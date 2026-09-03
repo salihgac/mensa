@@ -57,11 +57,13 @@
   var depoVideo = depoCerceve && depoCerceve.querySelector(".depodan-video");
   if (depoVideo) {
     // video/depodan/01..10 - yeni video eklenince yalnizca bu sayi degisir.
-    var depoAdet = 10, depoListe = [], depoKapak = [];
+    // depoSurum: dosya adlari ayni kalip ICERIK degisince (sira degistirme,
+    // yeniden kodlama) artirilir; yoksa tarayici eski kopyayi gosterir.
+    var depoAdet = 10, depoSurum = "?v=2", depoListe = [], depoKapak = [];
     for (var d = 1; d <= depoAdet; d++) {
       var ad = "video/depodan/" + (d < 10 ? "0" : "") + d;
-      depoListe.push(ad + ".mp4");
-      depoKapak.push(ad + ".webp");
+      depoListe.push(ad + ".mp4" + depoSurum);
+      depoKapak.push(ad + ".webp" + depoSurum);
     }
     var sira = 0, gorunur = false;
     var noktalar = depoCerceve.querySelector(".depodan-noktalar");
