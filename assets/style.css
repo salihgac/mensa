@@ -1051,18 +1051,20 @@ img { display: block; max-width: 100%; height: auto; }
    olsun aynı görünüyor. */
 .depodan-liste {
   list-style: none; margin: var(--s4) 0 0; padding: var(--s4) 0 0;
-  border-top: 1px solid var(--line);
-  display: grid; gap: var(--s2);
+  /* Ayraç marka renginde ve 2px: --line (#E2DBD6) açık zeminde neredeyse
+     görünmüyordu, listeyi metinden ayırmıyordu. */
+  border-top: 2px solid var(--brand);
+  display: grid; gap: var(--s3);
   max-width: 38ch;
 }
 .depodan-liste li {
   display: flex; align-items: flex-start; gap: 0.75rem;
-  color: var(--ink-body); font-size: var(--t-body); line-height: 1.5;
+  color: var(--ink-body); font-size: var(--t-lead); line-height: 1.5;
 }
 .depodan-liste li::before {
   content: ""; flex: none;
-  width: 0.4em; height: 0.75em; margin-top: 0.15em;
-  border: solid var(--brand); border-width: 0 2px 2px 0;
+  width: 0.4em; height: 0.75em; margin-top: 0.2em;
+  border: solid var(--brand); border-width: 0 2.5px 2.5px 0;
   transform: rotate(45deg);
 }
 
